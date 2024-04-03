@@ -14,10 +14,17 @@ interface ChatHistoryProps {
 export async function ChatHistory({ userId }: ChatHistoryProps) {
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between p-4">
-        <h4 className="text-sm font-medium">Chat History</h4>
+      <div className="flex items-center justify-between pl-4 pb-4 pt-4">
+        <h4 className="text-sm font-medium">Administration</h4>
       </div>
-      <div className="mb-2 px-2">
+      <div className="flex items-center justify-between pl-4 pb-4">
+        <h4 className="text-sm font-medium">Bookmarks</h4>
+      </div>
+      <hr></hr>
+      {/* <div className="flex items-center justify-between pl-4 pb-4 pt-2"> */}
+        {/* <h4 className="text-sm font-medium">Chat History</h4> */}
+      {/* </div> */}
+      <div className="mb-2 p-2">
         <Link
           href="/"
           className={cn(
