@@ -67,9 +67,8 @@ export async function middleware(request: NextRequest) {
     }
   )
   // console.log(await supabase.auth.getUser())
-  await supabase.auth.getUser()
-  let {data: session} = await supabase.auth.getSession()
-  const cookieStore = cookies()
+  let {data: session} = await supabase.auth.getUser()
+  // let {data: session} = await supabase.auth.getSession()
 
   // OPTIONAL: this forces users to be logged in to use the chatbot.
   // If you want to allow anonymous users, simply remove the check below.
@@ -78,7 +77,7 @@ export async function middleware(request: NextRequest) {
     return response
   }
   if (
-    !session.session &&
+    !session.user &&
     !request.url.includes('/sign-in') &&
     !request.url.includes('/sign-up') &&
     !request.url.includes('/reset-password')
@@ -89,7 +88,7 @@ export async function middleware(request: NextRequest) {
     user_id ? redirectUrl.searchParams.set(`user_id`, user_id) : undefined
     return NextResponse.redirect(redirectUrl)
   }
-  else if (session.session && request.url.includes('/reset-password') && request.url.includes('/sign-up') && request.url.includes('/sign-in')){
+  else if (session.user && request.url.includes('/reset-password') && request.url.includes('/sign-up') && request.url.includes('/sign-in')){
     const redirectUrl = request.nextUrl.clone()
     redirectUrl.pathname = '/'
     user_id ? redirectUrl.searchParams.set(`user_id`, user_id) : undefined

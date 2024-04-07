@@ -34,7 +34,7 @@ import {
 import { saveChat } from '@/app/actions'
 import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
 import { Chat } from '@/lib/types'
-import { auth } from '@/auth'
+import { authUser } from '@/auth'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
@@ -420,7 +420,7 @@ export const AI = createAI<AIState, UIState>({
   unstable_onGetUIState: async () => {
     'use server'
 
-    const session = await auth()
+    const session = await authUser()
 
     if (session && session.user) {
       const aiState = getAIState()
@@ -436,7 +436,7 @@ export const AI = createAI<AIState, UIState>({
   unstable_onSetAIState: async ({ state, done }) => {
     'use server'
 
-    const session = await auth()
+    const session = await authUser()
 
     if (session && session.user) {
       const { chatId, messages } = state

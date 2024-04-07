@@ -1,4 +1,4 @@
-import { auth } from '@/auth'
+import { auth, authUser } from '@/auth'
 import { LoginButton } from '@/components/login-button'
 import { LoginForm } from '@/components/login-form'
 import { LoginFormSearchParams } from '@/components/login-form-searchparams'
@@ -13,7 +13,7 @@ export default async function SignInPage({
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
 
-  let session = await auth()
+  let session = await authUser()
 
   // legacy code
   // // //  const user_id = searchParams?.user_id

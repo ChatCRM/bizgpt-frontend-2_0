@@ -2,7 +2,7 @@ import * as React from 'react'
 import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
-import { auth } from '@/auth'
+import { auth, authUser } from '@/auth'
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
   IconGitHub,
@@ -17,7 +17,7 @@ import { ChatHistory } from './chat-history'
 import { Session } from '@/lib/types'
 
 async function UserOrLogin() {
-  const session = (await auth()) as Session
+  const session = await authUser() 
   return (
     <>
       {session?.user ? (
@@ -36,7 +36,7 @@ async function UserOrLogin() {
       <div className="flex items-center">
         <IconSeparator className="size-6 text-muted-foreground/50" />
         {session?.user ? (
-          <UserMenu user={session.user} />
+          <UserMenu email={session.user.email!} />
         ) : (
           <Button variant="link" asChild className="-ml-2">
             <Link href="/login">Login</Link>
