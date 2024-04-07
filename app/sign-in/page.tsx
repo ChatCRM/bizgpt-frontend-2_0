@@ -13,7 +13,6 @@ export default async function SignInPage({
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
 
-  console.log('haha')
   let session = await auth()
 
   // legacy code

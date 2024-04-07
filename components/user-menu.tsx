@@ -1,3 +1,4 @@
+'use client'
 import { type Session } from '@/lib/types'
 
 import { Button } from '@/components/ui/button'
@@ -9,6 +10,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { logout } from '@/utils/login'
+import { useRouter } from 'next/navigation'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -20,6 +22,17 @@ function getUserInitials(name: string) {
 }
 
 export function UserMenu({ user }: UserMenuProps) {
+  const router = useRouter()
+  const logOut = async () => {
+    const error = await logout()
+    if (error) {
+      router.push('/error')
+      router.refresh();
+    }
+    router.push('/')
+    router.refresh();
+
+  }
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
@@ -37,10 +50,7 @@ export function UserMenu({ user }: UserMenuProps) {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <form
-            action={async () => {
-              'use server'
-              await logout()
-            }}
+            action={logOut}
           >
             <button className=" relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-red-500 hover:text-white focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
               Sign Out
