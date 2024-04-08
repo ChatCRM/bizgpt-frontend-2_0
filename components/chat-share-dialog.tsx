@@ -34,13 +34,12 @@ export function ChatShareDialog({
 
   const copyShareLink = React.useCallback(
     async (chat: Chat) => {
-      if (!chat.sharePath) {
+      if (!chat.path) {
         return toast.error('Could not copy share link to clipboard')
       }
-
       const url = new URL(window.location.href)
-      url.pathname = chat.sharePath
-      copyToClipboard(url.toString())
+      url.pathname = chat.path
+      console.log(copyToClipboard(url.toString()))
       onCopy()
       toast.success('Share link copied to clipboard')
     },
@@ -69,13 +68,7 @@ export function ChatShareDialog({
               // @ts-ignore
               startShareTransition(async () => {
                 const result = await shareChat(chat.id)
-
-                if (result && 'error' in result) {
-                  toast.error(result.error)
-                  return
-                }
-
-                copyShareLink(result)
+                copyShareLink(result as Chat)
               })
             }}
           >

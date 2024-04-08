@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { createClient as createClientDirect } from "@supabase/supabase-js";
 
 export function createClient() {
   const cookieStore = cookies()
@@ -33,4 +34,15 @@ export function createClient() {
       },
     }
   )
+}
+
+export function createClientSchema(){
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const supabaseBucket = process.env.NEXT_PUBLIC_SUPABASE_BUCKET_NAME!;
+  const supabaseSchema = process.env.NEXT_PUBLIC_SUPABASE_SCHEMA!;
+
+  return createClientDirect(supabaseUrl, supabaseKey, {
+    db: { schema: supabaseSchema },
+  });
 }
