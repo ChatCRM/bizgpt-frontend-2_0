@@ -124,15 +124,11 @@ export async function shareChat(id: string) {
 
 export async function renameChat(id: string, name: string) {
   const supabase = createClientSchema()
-  console.log('haha')
   const { data: chat } = await supabase
   .from('chats')
   .select('payload')
   .eq('id', id)
   .maybeSingle()
-
-  console.log(chat?.payload.title)
-
 
   const payload = {
     ...chat?.payload

@@ -46,7 +46,7 @@ export function ChatShareDialog({
       }
       const url = new URL(window.location.href)
       url.pathname = chat.path
-      console.log(copyToClipboard(url.toString()))
+      copyToClipboard(url.toString())
       onCopy()
       toast.success('Share link copied to clipboard')
     },
