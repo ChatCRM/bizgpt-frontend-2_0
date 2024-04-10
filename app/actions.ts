@@ -122,6 +122,34 @@ export async function shareChat(id: string) {
     return
 }
 
+export async function renameChat(id: string, name: string) {
+  const supabase = createClientSchema()
+  console.log('haha')
+  const { data: chat } = await supabase
+  .from('chats')
+  .select('payload')
+  .eq('id', id)
+  .maybeSingle()
+
+  console.log(chat?.payload.title)
+
+
+  const payload = {
+    ...chat?.payload
+  }
+  payload.title = name
+
+  await supabase
+    .from('chats')
+    .update({ payload: payload})
+    .eq('id', id)
+    .throwOnError()
+  if(chat)
+    return chat.payload
+  else
+    return
+}
+
 export async function refreshHistory(path: string) {
   redirect(path)
 }

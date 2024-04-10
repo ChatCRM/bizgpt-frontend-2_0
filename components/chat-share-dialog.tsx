@@ -16,10 +16,17 @@ import {
 } from '@/components/ui/dialog'
 import { IconSpinner } from '@/components/ui/icons'
 import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard'
+import { Textarea } from "@/components/ui/textarea"
+import { useRouter } from 'next/navigation'
 
 interface ChatShareDialogProps extends DialogProps {
   chat: Pick<Chat, 'id' | 'title' | 'messages'>
   shareChat: (id: string) => ServerActionResult<Chat>
+  onCopy: () => void
+}
+interface ChatRenameDialogProps extends DialogProps {
+  chat: Pick<Chat, 'id' | 'title' | 'messages'>
+  renameChat: (id: string, name: string) => ServerActionResult<Chat>
   onCopy: () => void
 }
 
@@ -67,7 +74,7 @@ export function ChatShareDialog({
             onClick={() => {
               // @ts-ignore
               startShareTransition(async () => {
-                const result = await shareChat(chat.id)
+                const result = await shareChat(chat.id, )
                 copyShareLink(result as Chat)
               })
             }}
@@ -79,6 +86,68 @@ export function ChatShareDialog({
               </>
             ) : (
               <>Copy link</>
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+
+export function ChatRenameDialog({
+  chat,
+  renameChat,
+  onCopy,
+  ...props
+}: ChatRenameDialogProps) {
+  const { copyToClipboard } = useCopyToClipboard({ timeout: 1000 })
+  const [isSharePending, startShareTransition] = React.useTransition()
+  const [newChatName, setNewChatName] = React.useState('')
+  const router = useRouter()
+
+  const RenameChat = React.useCallback(
+    async (chat: Chat) => {
+      if (!chat.title) {
+        return toast.error('Could not rename chat')
+      }
+      const url = new URL(window.location.href)
+      url.pathname = chat.path
+      onCopy()
+      toast.success('Chat Renamed Successfully.')
+      router.refresh()
+    },
+    [copyToClipboard, onCopy]
+  )
+  
+  return (
+    <Dialog {...props}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Rename Chat</DialogTitle>
+          <DialogDescription>
+            Try to use a brief and concise name for later reference.
+          </DialogDescription>
+        </DialogHeader>
+        <Textarea placeholder="Type here." onChange={e => setNewChatName(e.target.value.slice(0,100))}/>
+        <DialogFooter className="items-center">
+          <Button
+            disabled={isSharePending}
+            onClick={() => {
+              // @ts-ignore
+              startShareTransition(async () => {
+                const result = await renameChat(chat.id, newChatName)
+                RenameChat(result as Chat)
+              })
+            }}
+          >
+            {isSharePending ? (
+              <>
+                <IconSpinner className="mr-2 animate-spin" />
+                Renaming...
+              </>
+            ) : (
+              <>Rename Chat</>
             )}
           </Button>
         </DialogFooter>
