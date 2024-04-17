@@ -21,6 +21,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'react-hot-toast'
 
+import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
+import { useRouter } from 'next/navigation'
+
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -36,9 +39,12 @@ export function Chat({ id, initialMessages, username, bookmarks, feedbacks, book
     'ai-token',
     null
   )
+  const router = useRouter()
   const [firstLoad, setFirstLoad] = useState(true)
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
+  const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
+    useScrollAnchor()
   const { messages, append, reload, stop, isLoading, input, setInput } =
     useChat({
       initialMessages,
@@ -51,9 +57,15 @@ export function Chat({ id, initialMessages, username, bookmarks, feedbacks, book
         if (response.status === 401) {
           toast.error(response.statusText)
         }
+      },
+      onFinish(){
+        console.log(id)
+        router.push(`/chat/${id}`)
+        router.refresh()
       }
     })
-
+  
+  const [_, setNewChatId] = useLocalStorage('newChatId', id)
   // Scroll down upon initial page load
   useEffect(() => {
     if (firstLoad) {
@@ -61,7 +73,6 @@ export function Chat({ id, initialMessages, username, bookmarks, feedbacks, book
         top: document.body.offsetHeight,
         behavior: 'smooth'
       })
-      console.log(firstLoad)
       setFirstLoad(false)
     }
     else {
@@ -69,10 +80,12 @@ export function Chat({ id, initialMessages, username, bookmarks, feedbacks, book
     }
   }
     , [firstLoad])
-
+  useEffect(() => {
+    setNewChatId(id)
+  })
   return (
     <>
-      <div className='pb-[200px] pt-4 md:pt-10 group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[0px]'>
+      <div className='pb-[200px] pt-4 md:pt-10 group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]'>
         {messages.length ? (
           <>
             <ChatList messages={messages} username={username} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={bookmark_page} />

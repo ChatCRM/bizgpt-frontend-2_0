@@ -19,7 +19,6 @@ export async function getChats(userId?: string | null) {
       .order('payload->createdAt', { ascending: false })
       .eq('user_id', userId)
       .throwOnError()
-
     return (data?.map(entry => entry.payload) as Chat[]) ?? []
   } catch (error) {
     return []
@@ -31,7 +30,7 @@ export async function getChat(id: string) {
   const { data } = await supabase
     .from('chats')
     .select('payload')
-    .eq('id', id)
+    .eq('chat_id', id)
     .maybeSingle()
 
   return (data?.payload as Chat) ?? null
@@ -47,7 +46,7 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
   }
   try {
     const supabase = createClientSchema()
-    await supabase.from('chats').delete().eq('id', id).throwOnError()
+    await supabase.from('chats').delete().eq('chat_id', id).throwOnError()
 
     revalidatePath('/')
     return revalidatePath(path)
@@ -90,7 +89,7 @@ export async function getSharedChat(id: string) {
   const { data } = await supabase
     .from('chats')
     .select('payload')
-    .eq('id', id)
+    .eq('chat_id', id)
     .not('payload->sharePath', 'is', null)
     .maybeSingle()
 
@@ -127,7 +126,7 @@ export async function renameChat(id: string, name: string) {
   const { data: chat } = await supabase
   .from('chats')
   .select('payload')
-  .eq('id', id)
+  .eq('chat_id', id)
   .maybeSingle()
 
   const payload = {
@@ -138,7 +137,7 @@ export async function renameChat(id: string, name: string) {
   await supabase
     .from('chats')
     .update({ payload: payload})
-    .eq('id', id)
+    .eq('chat_id', id)
     .throwOnError()
   if(chat)
     return chat.payload

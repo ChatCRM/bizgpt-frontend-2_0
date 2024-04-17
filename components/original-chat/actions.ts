@@ -189,7 +189,7 @@ export async function getChatSupabase(id: string) {
   const { data } = await supabase
     .from('chats')
     .select('payload')
-    .eq('id', id)
+    .eq('chat_id', id)
     .maybeSingle()
 
   return (data?.payload as Chat) ?? null
@@ -205,7 +205,7 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
       },
       db: { schema: process.env.BIZGPT_ORGANIZATION } 
     })
-    await supabase.from('chats').delete().eq('id', id).throwOnError()
+    await supabase.from('chats').delete().eq('chat_id', id).throwOnError()
 
     revalidatePath('/')
     return revalidatePath(path)

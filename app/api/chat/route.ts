@@ -70,7 +70,7 @@ export async function POST(req: Request) {
       }
       if (mode == 'supabase')
         // Insert chat into database.
-        await supabase.from('chats').upsert({ 'chat_id': id, 'payload': payload }).throwOnError()
+        await supabase.from('chats').upsert({ 'chat_id': id, 'user_id': userId, 'payload': payload }).throwOnError()
     }
   })
 

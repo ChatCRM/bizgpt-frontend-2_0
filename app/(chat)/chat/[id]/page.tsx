@@ -41,51 +41,15 @@ export default async function ChatPage({ params }: ChatPageProps) {
     redirect(`/sign-in?next=/chat/${params.id}`)
   }
 
-  const id = nanoid()
-
-
-  let bookmarks = { 'bookmarks' : {}};
-  let feedbacks = { 'feedbacks' : {}};
-  let chat = { 'messages': {}, 'id': undefined, 'userId': session?.user?.id}
+  let bookmarks = { 'bookmarks': {} };
+  let feedbacks = { 'feedbacks': {} };
   let mode = process.env.PERSISTENCE_MODE;
-  if (mode?.replace('"','') == 'supabase') 
-  {
-    // chat = await getChatSupabase(params.id)
-    chat = await getChat(params.id)
-    if (!chat) {
-      notFound()
-    }
-  
-    if (chat?.userId !== session?.user?.id) {
-      notFound()
-    }
-    bookmarks = await getBookmarksSupabase(session?.user?.id)
-    feedbacks = await getFeedbacksSupabase(session?.user?.id)
+
+  const chat = await getChatSupabase(params.id)
+
+  if (!chat) {
+    notFound()
   }
 
-  // [Correcting the JSON object schema]
-  // since the logic in the frontend needs the schema to be like { bookmarks: {} } or { feedbacks: {} or { messages : {}} }
-  // And the Client API provides in a { ...messages } format
-  else if (mode?.replace('"','') == 'local'){
-    // correcting the [chat] schema
-    chat = await getChatlocal(params.username)
-    let temp_response_chat = await getChatLocal(session?.user?.email)
-    if (!temp_response_chat.hasOwnProperty('messages')) chat = { 'messages': temp_response_chat}
-    else chat = await getChatLocal(session?.user?.email)
-    if (!chat) {
-      notFound()
-    }
-    // correcting the [bookmarks] schema
-    let temp_response_bookmarks = await getBookmarksLocal(session?.user?.email)
-    if (!temp_response_bookmarks.hasOwnProperty('bookmarks')) bookmarks = { 'bookmarks': temp_response_bookmarks}
-    else bookmarks = await getBookmarksLocal(session?.user?.email)
-    // correcting the [feedbacks] schema
-    let temp_response_feedbacks = await getFeedbacksLocal(session?.user?.email)
-    if (!temp_response_feedbacks.hasOwnProperty('feedbacks')) feedbacks = { 'feedbacks': temp_response_feedbacks}
-    else feedbacks = await getFeedbacksLocal(session?.user?.email)
-  } 
-  return (
-    <div>
-  <Chat id={chat.id} initialMessages={chat.messages} username={session?.user?.email} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={false} />
-  </div>
-  )}
+  return <Chat id={chat.id} initialMessages={chat.messages} username={session?.user?.email} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={false} />
+}
