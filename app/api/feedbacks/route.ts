@@ -1,5 +1,6 @@
 import 'server-only'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+// import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { createClientSchema } from '@/utils/supabase/server' 
 import { cookies } from 'next/headers'
 import { Database } from '@/lib/db_types'
 import { auth, authUser } from '@/auth'
@@ -11,13 +12,11 @@ export async function POST(req: Request) {
   const json = await req.json()
   let mode = json.mode
   const cookieStore = cookies()
-  const userId = (await authUser())?.user.id
-  const userName = (await authUser())?.user.email
+  const userId = (await authUser())?.user?.id
+  const userName = (await authUser())?.user?.email
 
   if (mode?.replace('"','') == "supabase") {
-    const supabase = createRouteHandlerClient<Database>({
-      cookies: () => cookieStore
-    })
+    const supabase = createClientSchema()
     const id = userId
     const user_id = userId
     const payload = { feedbacks: json.data }

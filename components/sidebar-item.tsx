@@ -30,11 +30,6 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
   const isActive = pathname === chat.path
   const [newChatId, setNewChatId] = useLocalStorage('newChatId', null)
   const shouldAnimate = index === 0 && isActive && newChatId
-  console.log('pathname: ', pathname)
-  console.log('newChatId: ', newChatId)
-  console.log('isActive: ', isActive)
-  console.log('index: ', index)
-  console.log('shouldAnimate: ', shouldAnimate)
   if (!chat?.id) return null
 
   return (

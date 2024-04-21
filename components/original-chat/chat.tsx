@@ -58,53 +58,65 @@ export function Chat({ id, initialMessages, username, bookmarks, feedbacks, book
           toast.error(response.statusText)
         }
       },
-      onFinish(){
+      onFinish() {
         console.log(id)
         router.push(`/chat/${id}`)
         router.refresh()
       }
     })
-  
+
   const [_, setNewChatId] = useLocalStorage('newChatId', id)
-  // Scroll down upon initial page load
-  useEffect(() => {
-    if (firstLoad) {
-      window.scrollTo({
-        top: document.body.offsetHeight,
-        behavior: 'smooth'
-      })
-      setFirstLoad(false)
-    }
-    else {
-      setFirstLoad(false)
-    }
-  }
-    , [firstLoad])
+
+  //////// NOTE: DEPRECATED CODE
+  // // Scroll down upon initial page load
+  // useEffect(() => {
+  //   if (firstLoad) {
+  //     window.scrollTo({
+  //       top: document.body.offsetHeight,
+  //       behavior: 'smooth'
+  //     })
+  //     setFirstLoad(false)
+  //   }
+  //   else {
+  //     setFirstLoad(false)
+  //   }
+  // }
+  //   , [firstLoad])
+
   useEffect(() => {
     setNewChatId(id)
   })
   return (
     <>
-      <div className='pb-[200px] pt-4 md:pt-10 group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]'>
-        {messages.length ? (
-          <>
-            <ChatList messages={messages} username={username} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={bookmark_page} />
-            <ChatScrollAnchor trackVisibility={isLoading} />
-          </>
-        ) : (
-          <EmptyScreen setInput={setInput} />
-        )}
+      <div className='group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[250px]'
+        ref={scrollRef}>
+        <div
+          className={cn('pb-[200px] pt-4 md:pt-10', className)}
+          ref={messagesRef}
+        >
+          {messages.length ? (
+            <>
+              <ChatList messages={messages} username={username} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={bookmark_page} />
+              <ChatScrollAnchor trackVisibility={isLoading} />
+            </>
+          ) : (
+            <EmptyScreen setInput={setInput} />
+          )}
+          <div className="h-px w-full" ref={visibilityRef} />
+        </div>
+        <ChatPanel
+          id={id}
+          isLoading={isLoading}
+          stop={stop}
+          append={append}
+          reload={reload}
+          messages={messages}
+          input={input}
+          setInput={setInput}
+          isAtBottom={isAtBottom}
+          scrollToBottom={scrollToBottom}
+        />
       </div>
-      <ChatPanel
-        id={id}
-        isLoading={isLoading}
-        stop={stop}
-        append={append}
-        reload={reload}
-        messages={messages}
-        input={input}
-        setInput={setInput}
-      />
     </>
   )
 }

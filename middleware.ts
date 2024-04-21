@@ -68,7 +68,7 @@ export async function middleware(request: NextRequest) {
   )
   // console.log(await supabase.auth.getUser())
   let {data: session} = await supabase.auth.getUser()
-  // let {data: session} = await supabase.auth.getSession()
+  await supabase.auth.getSession()
 
   // OPTIONAL: this forces users to be logged in to use the chatbot.
   // If you want to allow anonymous users, simply remove the check below.
