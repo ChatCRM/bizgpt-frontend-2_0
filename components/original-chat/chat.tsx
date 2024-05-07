@@ -33,9 +33,10 @@ export interface ChatProps extends React.ComponentProps<'div'> {
   feedbacks?: JSON | undefined,
   bookmark_page: Boolean
   chat_id: Number
+  user_id: String | undefined
 }
 
-export function Chat({ id, initialMessages, username, bookmarks, feedbacks, bookmark_page, className }: ChatProps) {
+export function Chat({ id, initialMessages, user_id, username, bookmarks, feedbacks, bookmark_page, className }: ChatProps) {
   const [previewToken, setPreviewToken] = useLocalStorage<string | null>(
     'ai-token',
     null
@@ -52,7 +53,9 @@ export function Chat({ id, initialMessages, username, bookmarks, feedbacks, book
       id,
       body: {
         id,
-        previewToken
+        previewToken,
+        user_id,
+        username
       },
       onResponse(response) {
         if (response.status === 401) {

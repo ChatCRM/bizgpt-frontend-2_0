@@ -3,14 +3,14 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 import GlobalConfig from '@/app/app.config.js'
 
-const TextDirection = process.env.TEXT_DIRECTION
+const TextDirection = process.env.NEXT_PUBLIC_TEXT_DIRECTION
 const clientFooterName = process.env.NEXT_PUBLIC_CLIENT_BRANDING_NAME ? process.env.NEXT_PUBLIC_CLIENT_BRANDING_NAME : 'BizGPT' 
 
 
 export function FooterText({ className, ...props }: React.ComponentProps<'p'>) {
   // Language and Translation
   // var TranslationData = require(`@/translation/${process.env.BIZGPT_FRONTEND_LANGUAGE}.json`);
-  var TranslationData = require(`@/translation/EN.json`);
+  var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`);
   return (
     <p
       dir={TextDirection}

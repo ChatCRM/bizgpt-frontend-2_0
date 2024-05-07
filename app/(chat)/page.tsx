@@ -18,6 +18,6 @@ export default async function IndexPage() {
   let feedbacks = { 'feedbacks': {} };
   let chat = { 'messages': [], 'id': id, 'userId': session?.user?.id }
 
-  return <Chat id={id} username={session?.user?.email} initialMessages={chat.messages} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={false} />
+  return <Chat id={id} user_id={session?.user?.id} username={session?.user?.email} initialMessages={chat.messages} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={false} />
 
 }

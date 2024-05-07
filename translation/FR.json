@@ -94,5 +94,10 @@
   "datetime_added": "Date et heure ajoutées",
   "Document Chunk": "Segment de document",
   "metadata": "Source",
-  "Open Your Outline Instance": "Ouvre ton instance de Outline"
+  "Open Your Outline Instance": "Ouvre ton instance de Outline",
+  "No chat history": "Aucun historique de discussion",
+  "Chat History": "Historique de discussion",
+  "New Chat": "Nouveau chat",
+  "This will permanently delete your chat history and remove your data from our servers.": "Cela supprimera définitivement l'historique de vos discussions et effacera vos données de nos serveurs.",
+  "Clear history": "Effacer l'historique"
 }

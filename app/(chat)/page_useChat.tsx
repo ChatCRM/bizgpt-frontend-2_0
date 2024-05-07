@@ -83,5 +83,5 @@ export default async function ChatPage({ params }: ChatPageProps) {
     if (!temp_response_feedbacks.hasOwnProperty('feedbacks')) feedbacks = { 'feedbacks': temp_response_feedbacks}
     else feedbacks = await getFeedbacksLocal(session?.user?.email)
   } 
-  return <Chat id={session?.user?.email} initialMessages={chat.messages} username={session?.user?.email} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={false} />
+  return <Chat id={session?.user?.email} initialMessages={chat.messages} user_id={session?.user?.id} username={session?.user?.email} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={false} />
 }

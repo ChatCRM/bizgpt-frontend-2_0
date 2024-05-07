@@ -27,7 +27,7 @@ export function LoginForm({
   action = 'sign-in',
   ...props
 }: LoginFormProps) {
-  const TextDirection = process.env.TEXT_DIRECTION
+  const TextDirection = process.env.NEXT_PUBLIC_TEXT_DIRECTION
   const [isLoading, setIsLoading] = React.useState(false)
   const router = useRouter()
   // Create a Supabase client configured to use cookies
@@ -82,7 +82,7 @@ export function LoginForm({
   }
 
   // Language and Translation
-  var TranslationData = require(`@/translation/EN.json`);
+  var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`);
 
   return (
     <div {...props}>

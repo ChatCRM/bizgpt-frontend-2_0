@@ -22,7 +22,7 @@ export interface ChatMessageProps {
 
 export function ChatMessage({ chat_id, message, index, username, bookmarks, feedbacks, bookmark_page, ...props }: ChatMessageProps) {
 
-  const text_direction = process.env.TEXT_DIRECTION
+  const NEXT_PUBLIC_TEXT_DIRECTION = process.env.NEXT_PUBLIC_TEXT_DIRECTION
   
   return (
     <div
@@ -45,7 +45,7 @@ export function ChatMessage({ chat_id, message, index, username, bookmarks, feed
           remarkPlugins={[remarkGfm, remarkMath]}
           components={{
             p({ children }) {
-              return <p className="mb-2 last:mb-0" dir={text_direction == 'RTL' ? "rtl" : "ltr" } >{children}</p>
+              return <p className="mb-2 last:mb-0" dir={NEXT_PUBLIC_TEXT_DIRECTION == 'RTL' ? "rtl" : "ltr" } >{children}</p>
             },
             code({ node, inline, className, children, ...props }) {
               if (children.length) {

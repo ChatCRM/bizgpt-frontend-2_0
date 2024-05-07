@@ -7,13 +7,13 @@ import { IconArrowRight } from '@/components/ui/icons'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GlobalConfig from '@/app/app.config.js'
 
-const TextDirection = process.env.TEXT_DIRECTION
+const TextDirection = process.env.NEXT_PUBLIC_TEXT_DIRECTION
 const clientFooterName = process.env.NEXT_PUBLIC_CLIENT_BRANDING_NAME ? process.env.NEXT_PUBLIC_CLIENT_BRANDING_NAME : 'BizGPT' 
 
 export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
   
   // Language and Translation
-  var TranslationData = require(`@/translation/EN.json`);
+  var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`);
 
   const exampleMessages = [
     {

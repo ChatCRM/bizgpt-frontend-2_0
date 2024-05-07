@@ -191,11 +191,11 @@ export function ChatMessageActionsFeedback({
   const [submitted, setSubmitted] = useState(false);
   const [inputText, setInputText] = useState(null);
   const [faceScore, setFaceScore] = useState(null);
-  const TextDirection = process.env.TEXT_DIRECTION
+  const TextDirection = process.env.NEXT_PUBLIC_TEXT_DIRECTION
   const feedback_state = feedbacks?.feedbacks[`feedback_${index_fixer(index)}`]?.score
 
   // Language and Translation
-  var TranslationData = require(`@/translation/EN.json`);
+  var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`);
 
   useEffect(() => {
     if (index % 2 != 0) {

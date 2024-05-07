@@ -3,6 +3,8 @@ import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { cache } from 'react'
+import GlobalConfig from '@/app/app.config.js'
+import { GetTranslation } from "@/components/translation-helper/ClientTranslations"
 
 interface SidebarListProps {
   userId?: string
@@ -15,6 +17,7 @@ const loadChats = cache(async (userId?: string) => {
 
 export async function SidebarList({ userId }: SidebarListProps) {
   const chats = await loadChats(userId)
+  var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -25,7 +28,9 @@ export async function SidebarList({ userId }: SidebarListProps) {
           </div>
         ) : (
           <div className="p-8 text-center">
-            <p className="text-sm text-muted-foreground">No chat history</p>
+            <p className="text-sm text-muted-foreground">
+              <GetTranslation text="No chat history"/>
+              </p>
           </div>
         )}
       </div>

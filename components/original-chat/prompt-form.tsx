@@ -17,7 +17,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import GlobalConfig from '@/app/app.config.js'
 
-const TextDirection = process.env.TEXT_DIRECTION
+const TextDirection = process.env.NEXT_PUBLIC_TEXT_DIRECTION
 
 export interface PromptProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
@@ -42,7 +42,7 @@ export function PromptForm({
 
   // Language and Translation
   // var TranslationData = require(`@/translation/${process.env.BIZGPT_FRONTEND_LANGUAGE}.json`);
-  var TranslationData = require(`@/translation/EN.json`);
+  var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`);
 
   return (
     <form

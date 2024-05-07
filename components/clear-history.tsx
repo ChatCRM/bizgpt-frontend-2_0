@@ -19,6 +19,8 @@ import {
 } from '@/components/ui/alert-dialog'
 import { IconSpinner } from '@/components/ui/icons'
 
+import GlobalConfig from '@/app/app.config.js'
+
 interface ClearHistoryProps {
   isEnabled: boolean
   clearChats: () => ServerActionResult<void>
@@ -31,25 +33,25 @@ export function ClearHistory({
   const [open, setOpen] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
   const router = useRouter()
+  var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`);
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button variant="ghost" disabled={!isEnabled || isPending}>
           {isPending && <IconSpinner className="mr-2" />}
-          Clear history
+          {TranslationData["Clear history"]}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>{TranslationData["Are you absolutely sure?"]}</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete your chat history and remove your data
-            from our servers.
+          {TranslationData["This will permanently delete your chat history and remove your data from our servers."]}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>{TranslationData["Cancel"]}</AlertDialogCancel>
           <AlertDialogAction
             disabled={isPending}
             onClick={event => {
@@ -66,7 +68,7 @@ export function ClearHistory({
             }}
           >
             {isPending && <IconSpinner className="mr-2 animate-spin" />}
-            Delete
+            {TranslationData["Delete"]}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

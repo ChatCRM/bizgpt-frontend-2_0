@@ -18,27 +18,28 @@ export async function POST(req: Request) {
   const supabase = createClientSchema()
   const json = await req.json()
   const { messages, previewToken } = json
-  const userId = (await authUser())?.user.id
-
+  const userId = json.user_id
   if (!userId) {
     return new Response('Unauthorized', {
       status: 401
     })
   }
 
+
   if (previewToken) {
     configuration.apiKey = previewToken
   }
 
   const mode = process.env.PERSISTENCE_MODE
-  const userName = (await authUser())?.user.email
+  const userName = json.username
   const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_MESSAGES_SUBMIT_PATH}`
   const index = Math.round(json.messages.length / 2)
   const payload = {
     username: userName,
     streamlit_element_key_id: String(index),
     question_text: json.messages.at(-1).content,
-    chat_id: json.id
+    chat_id: json.id,
+    user_id: json.user_id
   }
   const res = await fetch(url, {
     method: 'POST',
