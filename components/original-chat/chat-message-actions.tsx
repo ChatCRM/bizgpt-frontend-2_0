@@ -91,6 +91,7 @@ interface ChatMessageActionsBookmarkProps extends React.ComponentProps<'div'> {
   index: number,
   username: String | undefined,
   bookmakrs: JSON | undefined
+  chat_id: String | undefined
 }
 
 interface ChatMessageActionsFeedbackProps extends React.ComponentProps<'div'> {
@@ -98,10 +99,12 @@ interface ChatMessageActionsFeedbackProps extends React.ComponentProps<'div'> {
   index: number,
   username: String | undefined,
   feedbacks: JSON | undefined
+  chat_id: String | undefined
 }
 
 
 export function ChatMessageActionsBookmark({
+  chat_id,
   message,
   index,
   username,
@@ -127,6 +130,7 @@ export function ChatMessageActionsBookmark({
       const bookmark_key = `bookmark_${index_fixer(index)}`
       let payload = { data: { ...bookmarks?.bookmarks }, mode: process.env.PERSISTENCE_MODE, state_diff: {} }
       payload['data'][bookmark_key] = { "bookmark": false }
+      paylad['chat_id'] = chat_id
       payload['state_diff']['bookmark_state'] = false
       payload['state_diff']['index'] = index_fixer(index)
       await fetch('/api/bookmarks', {
@@ -176,6 +180,7 @@ export function ChatMessageActionsBookmark({
 
 
 export function ChatMessageActionsFeedback({
+  chat_id,
   message,
   index,
   username,
@@ -251,6 +256,7 @@ export function ChatMessageActionsFeedback({
     const feedback_key = `feedback_${index_fixer(index)}`
     let payload = { data: { ...feedbacks?.feedbacks }, mode: process.env.PERSISTENCE_MODE, state_diff: {} }
     payload[feedback_key] = { "type": "faces", "score": FaceToScoreMapping[faceScore], "text": inputText }
+    paylad['chat_id'] = chat_id
     payload['data'][feedback_key] = { "type": "faces", "score": FaceToScoreMapping[faceScore], "text": inputText }
     payload['state_diff']['score'] = FaceToScoreMapping[faceScore]
     payload['state_diff']['text'] = inputText

@@ -32,6 +32,7 @@ export interface ChatProps extends React.ComponentProps<'div'> {
   bookmarks?: JSON | undefined,
   feedbacks?: JSON | undefined,
   bookmark_page: Boolean
+  chat_id: Number
 }
 
 export function Chat({ id, initialMessages, username, bookmarks, feedbacks, bookmark_page, className }: ChatProps) {
@@ -96,7 +97,7 @@ export function Chat({ id, initialMessages, username, bookmarks, feedbacks, book
         >
           {messages.length ? (
             <>
-              <ChatList messages={messages} username={username} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={bookmark_page} />
+              <ChatList chat_id={id} messages={messages} username={username} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={bookmark_page} />
               <ChatScrollAnchor trackVisibility={isLoading} />
             </>
           ) : (

@@ -37,7 +37,8 @@ export async function POST(req: Request) {
   const payload = {
     username: userName,
     streamlit_element_key_id: String(index),
-    question_text: json.messages.at(-1).content
+    question_text: json.messages.at(-1).content,
+    chat_id: json.id
   }
   const res = await fetch(url, {
     method: 'POST',
