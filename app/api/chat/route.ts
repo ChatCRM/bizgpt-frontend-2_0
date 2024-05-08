@@ -8,7 +8,7 @@ import { cookies } from 'next/headers'
 import { Database } from '@/lib/db_types'
 
 import { auth, authUser } from '@/auth'
-import { nanoid } from '@/lib/utils'
+import { nanoid, generateUUID } from '@/lib/utils'
 
 export const maxDuration = 120
 export const runtime = 'nodejs'
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
   const stream = OpenAIStream(res, {
     async onCompletion(completion) {
       const title = json.messages[0].content.substring(0, 100)
-      const id = json.id ?? nanoid()
+      const id = json.id ?? generateUUID()
       const createdAt = Date.now()
       const path = `/chat/${id}`
       const payload = {

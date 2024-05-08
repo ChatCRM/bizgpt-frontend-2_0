@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { nanoid } from '@/lib/utils'
+import { nanoid, generateUUID } from '@/lib/utils'
 import { Chat } from '@/components/original-chat/chat'
 import { auth, authUser } from '@/auth'
 import { cookies } from 'next/headers'
@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 export default async function IndexPage() {
   const cookieStore = cookies()
   const session = await authUser()
-  const id = nanoid()
+  const id = generateUUID()
 
   let bookmarks = { 'bookmarks': {} };
   let feedbacks = { 'feedbacks': {} };

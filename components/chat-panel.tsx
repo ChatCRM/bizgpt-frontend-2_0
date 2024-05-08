@@ -9,7 +9,7 @@ import { FooterText } from '@/components/footer'
 import { ChatShareDialog } from '@/components/chat-share-dialog'
 import { useAIState, useActions, useUIState } from 'ai/rsc'
 import type { AI } from '@/lib/chat/actions'
-import { nanoid } from 'nanoid'
+import { nanoid, generateUUID } from '@/lib/utils'
 import { UserMessage } from './stocks/message'
 
 export interface ChatPanelProps {
@@ -62,7 +62,7 @@ export function ChatPanel({
                   setMessages(currentMessages => [
                     ...currentMessages,
                     {
-                      id: nanoid(),
+                      id: generateUUID(),
                       display: <UserMessage>{example.message}</UserMessage>
                     }
                   ])

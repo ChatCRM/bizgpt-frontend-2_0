@@ -2,6 +2,7 @@ import { FeedbacksAdmin } from "@/app/admin/feedbacks/feedbacks"
 import { auth, authUser } from '@/auth'
 import { cookies } from 'next/headers'
 import { GetTranslation } from "@/components/translation-helper/ClientTranslations"
+import GlobalConfig from '@/app/app.config.js'
 
 export const runtime = 'nodejs'
 export const preferredRegion = 'home'
@@ -15,10 +16,10 @@ export default async function SettingsAccountPage() {
   const session = await authUser()
 
   // Language and Translation
-  var TranslationData = require(`@/translation/${process.env.BIZGPT_FRONTEND_LANGUAGE}.json`);
+  var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full group overflow-auto pl-12 pt-10 peer-[[data-state=open]]:lg:pl-[350px] peer-[[data-state=open]]:xl:pl-[350px]">
       <div>
         <h3 className="text-lg font-medium" dir={TextDirection}>
           {/* {TranslationData["Manage User Roles"]} */}

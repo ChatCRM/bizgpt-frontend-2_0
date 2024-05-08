@@ -56,16 +56,18 @@ export function ChatPanel({
             </Button>
           ) : (
             messages?.length > 0 
-            && (
-              <Button
-                variant="outline"
-                onClick={() => reload()}
-                className="bg-background"
-              >
-                <IconRefresh className="mr-2" />
-                Regenerate last response
-              </Button>
-            )
+
+           // Request: Disabled the Rengenerate Last Response feature 
+            // && (
+            //   <Button
+            //     variant="outline"
+            //     onClick={() => reload()}
+            //     className="bg-background"
+            //   >
+            //     <IconRefresh className="mr-2" />
+            //     Regenerate last response
+            //   </Button>
+            // )
           )}
           </div>
         </div>

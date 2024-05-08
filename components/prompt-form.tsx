@@ -15,7 +15,7 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip'
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
-import { nanoid } from 'nanoid'
+import { nanoid, generateUUID } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 
 export function PromptForm({
@@ -56,7 +56,7 @@ export function PromptForm({
         setMessages(currentMessages => [
           ...currentMessages,
           {
-            id: nanoid(),
+            id: generateUUID(),
             display: <UserMessage>{value}</UserMessage>
           }
         ])

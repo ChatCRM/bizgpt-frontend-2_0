@@ -29,7 +29,8 @@ import {
   formatNumber,
   runAsyncFnWithoutBlocking,
   sleep,
-  nanoid
+  nanoid,
+  generateUUID
 } from '@/lib/utils'
 import { saveChat } from '@/app/actions'
 import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
@@ -51,7 +52,7 @@ async function submitUserMessage(content: string) {
     messages: [
       ...aiState.get().messages,
       {
-        id: nanoid(),
+        id: generateUUID(),
         role: 'user',
         content
       }
@@ -103,7 +104,7 @@ Besides that, you can also chat with users and do some calculations if needed.`
           messages: [
             ...aiState.get().messages,
             {
-              id: nanoid(),
+              id: generateUUID(),
               role: 'assistant',
               content
             }
@@ -118,7 +119,7 @@ Besides that, you can also chat with users and do some calculations if needed.`
   })
 
   return {
-    id: nanoid(),
+    id: generateUUID(),
     display: ui
   }
 }
@@ -145,7 +146,7 @@ export const AI = createAI<AIState, UIState>({
     submitUserMessage
   },
   initialUIState: [],
-  initialAIState: { chatId: nanoid(), messages: [] },
+  initialAIState: { chatId: generateUUID(), messages: [] },
   unstable_onGetUIState: async () => {
     'use server'
 
