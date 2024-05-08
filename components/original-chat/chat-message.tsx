@@ -18,9 +18,10 @@ export interface ChatMessageProps {
   feedbacks: JSON | undefined,
   bookmark_page: Boolean
   chat_id: String | undefined
+  user_id: String | undefined
 }
 
-export function ChatMessage({ chat_id, message, index, username, bookmarks, feedbacks, bookmark_page, ...props }: ChatMessageProps) {
+export function ChatMessage({ chat_id, message, index, user_id, username, bookmarks, feedbacks, bookmark_page, ...props }: ChatMessageProps) {
 
   const NEXT_PUBLIC_TEXT_DIRECTION = process.env.NEXT_PUBLIC_TEXT_DIRECTION
   
@@ -81,8 +82,8 @@ export function ChatMessage({ chat_id, message, index, username, bookmarks, feed
         >
           {message.content}
         </MemoizedReactMarkdown>
-        {bookmark_page ? undefined : <ChatMessageActionsBookmark chat_id={chat_id} message={message} index={index} username={username} className={"bookmark-cls"} bookmarks={bookmarks}/>}
-        {bookmark_page ? undefined : <ChatMessageActionsFeedback chat_id={chat_id} message={message} index={index} username={username} className={"feedback-cls"} feedbacks={feedbacks} />}
+        {bookmark_page ? undefined : <ChatMessageActionsBookmark chat_id={chat_id} user_id={user_id} message={message} index={index} username={username} className={"bookmark-cls"} bookmarks={bookmarks}/>}
+        {bookmark_page ? undefined : <ChatMessageActionsFeedback chat_id={chat_id} user_id={user_id} message={message} index={index} username={username} className={"feedback-cls"} feedbacks={feedbacks} />}
       </div>
     </div>
   )

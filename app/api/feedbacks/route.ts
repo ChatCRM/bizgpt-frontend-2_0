@@ -10,11 +10,11 @@ export const runtime = 'nodejs'
 
 export async function POST(req: Request) {
   const json = await req.json()
-  let mode = json.mode
+  let mode = process.env.PERSISTENCE_MODE!
   const cookieStore = cookies()
-  const userId = (await authUser())?.user?.id
-  const userName = (await authUser())?.user?.email
-  const chat_id = json.data.chat_id
+  const userId = json.user_id
+  const userName = json.username
+  const chat_id = json.chat_id
 
   if (mode?.replace('"','') == "supabase") {
     const supabase = createClientSchema()

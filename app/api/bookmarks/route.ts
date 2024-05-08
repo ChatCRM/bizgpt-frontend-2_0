@@ -10,17 +10,17 @@ export const runtime = 'nodejs'
 
 export async function POST(req: Request) {
   const json = await req.json()
-  let mode = json.mode
+  let mode = process.env.PERSISTENCE_MODE!
   const cookieStore = cookies()
-  const userId = (await authUser())?.user?.id
-  const userName = (await authUser())?.user?.email
-  const chat_id = json.data.chat_id
+  const userId = json.user_id
+  const userName = json.username
+  const chat_id = json.chat_id
 
   if (mode?.replace('"','') == "supabase") {
     const supabase = createClientSchema()
     const id = userId
     const user_id = userId
-    const payload = { bookmarks: json.data }
+    const payload = { bookmarks: json.data, chat_id: chat_id }
     if (!userId) {
       return new Response('Unauthorized', {
         status: 401
@@ -31,6 +31,7 @@ export async function POST(req: Request) {
   else if (mode?.replace('"','') == "local") {
     const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_BOOKMARK_PERSIST_PATH}`
     const payload = { "streamlit_element_key_id": json?.state_diff?.index, 'is_bookmarked': json?.state_diff?.bookmark_state, 'username': userName, 'chat_id': chat_id };
+    console.log(payload)
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': "application/json", 'Authorization': `Bearer ${process.env.BizGPT_CLIENT_API_TOKEN_FRONTEND}` },

@@ -100,7 +100,7 @@ export function Chat({ id, initialMessages, user_id, username, bookmarks, feedba
         >
           {messages.length ? (
             <>
-              <ChatList chat_id={id} messages={messages} username={username} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={bookmark_page} />
+              <ChatList chat_id={id} messages={messages} username={username} user_id={user_id} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={bookmark_page} />
               <ChatScrollAnchor trackVisibility={isLoading} />
             </>
           ) : (

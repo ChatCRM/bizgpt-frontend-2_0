@@ -92,6 +92,7 @@ interface ChatMessageActionsBookmarkProps extends React.ComponentProps<'div'> {
   username: String | undefined,
   bookmakrs: JSON | undefined
   chat_id: String | undefined
+  user_id: String | undefined
 }
 
 interface ChatMessageActionsFeedbackProps extends React.ComponentProps<'div'> {
@@ -100,11 +101,13 @@ interface ChatMessageActionsFeedbackProps extends React.ComponentProps<'div'> {
   username: String | undefined,
   feedbacks: JSON | undefined
   chat_id: String | undefined
+  user_id: String | undefined
 }
 
 
 export function ChatMessageActionsBookmark({
   chat_id,
+  user_id,
   message,
   index,
   username,
@@ -130,7 +133,9 @@ export function ChatMessageActionsBookmark({
       const bookmark_key = `bookmark_${index_fixer(index)}`
       let payload = { data: { ...bookmarks?.bookmarks }, mode: process.env.PERSISTENCE_MODE, state_diff: {} }
       payload['data'][bookmark_key] = { "bookmark": false }
-      paylad['chat_id'] = chat_id
+      payload['chat_id'] = chat_id
+      payload['user_id'] = user_id
+      payload['username'] = username
       payload['state_diff']['bookmark_state'] = false
       payload['state_diff']['index'] = index_fixer(index)
       await fetch('/api/bookmarks', {
@@ -145,6 +150,9 @@ export function ChatMessageActionsBookmark({
       setBookmark(true)
       const bookmark_key = `bookmark_${index_fixer(index)}`
       let payload = { data: { ...bookmarks?.bookmarks }, mode: process.env.PERSISTENCE_MODE, state_diff: {} }
+      payload['chat_id'] = chat_id
+      payload['user_id'] = user_id
+      payload['username'] = username
       payload['data'][bookmark_key] = { "bookmark": true }
       payload['state_diff']['bookmark_state'] = true
       payload['state_diff']['index'] = index_fixer(index)
@@ -184,6 +192,7 @@ export function ChatMessageActionsFeedback({
   message,
   index,
   username,
+  user_id,
   feedbacks,
   className,
   ...props
@@ -256,7 +265,9 @@ export function ChatMessageActionsFeedback({
     const feedback_key = `feedback_${index_fixer(index)}`
     let payload = { data: { ...feedbacks?.feedbacks }, mode: process.env.PERSISTENCE_MODE, state_diff: {} }
     payload[feedback_key] = { "type": "faces", "score": FaceToScoreMapping[faceScore], "text": inputText }
-    paylad['chat_id'] = chat_id
+    payload['chat_id'] = chat_id
+    payload['user_id'] = user_id
+    payload['username'] = username
     payload['data'][feedback_key] = { "type": "faces", "score": FaceToScoreMapping[faceScore], "text": inputText }
     payload['state_diff']['score'] = FaceToScoreMapping[faceScore]
     payload['state_diff']['text'] = inputText
@@ -278,10 +289,10 @@ export function ChatMessageActionsFeedback({
             sx={{
               fontSize: 24,
               color: selectColor("😞"),
-              // '&:hover': {
-              //   cursor: submitted ? null : "pointer",
-              //   color: selectHoverColor("😞"),
-              // },
+              '&:hover': {
+                cursor: submitted ? null : "pointer",
+                color: selectHoverColor("😞"),
+              },
             }}
             onClick={() => submitted ? {} : handleFaceClick("😞")}
           />
@@ -289,10 +300,10 @@ export function ChatMessageActionsFeedback({
             sx={{
               fontSize: 24,
               color: selectColor("🙁"),
-              // '&:hover': {
-              //   cursor: submitted ? null : "pointer",
-              //   color: selectHoverColor("🙁"),
-              // },
+              '&:hover': {
+                cursor: submitted ? null : "pointer",
+                color: selectHoverColor("🙁"),
+              },
             }}
             onClick={() => submitted ? {} : handleFaceClick("🙁")}
           />
@@ -300,10 +311,10 @@ export function ChatMessageActionsFeedback({
             sx={{
               fontSize: 24,
               color: selectColor("😐"),
-              // '&:hover': {
-              //   cursor: submitted ? null : "pointer",
-              //   color: selectHoverColor("😐"),
-              // },
+              '&:hover': {
+                cursor: submitted ? null : "pointer",
+                color: selectHoverColor("😐"),
+              },
             }}
             onClick={() => submitted ? {} : handleFaceClick("😐")}
           />
@@ -311,10 +322,10 @@ export function ChatMessageActionsFeedback({
             sx={{
               fontSize: 24,
               color: selectColor("🙂"),
-              // '&:hover': {
-              //   cursor: submitted ? null : "pointer",
-              //   color: selectHoverColor("🙂"),
-              // },
+              '&:hover': {
+                cursor: submitted ? null : "pointer",
+                color: selectHoverColor("🙂"),
+              },
             }}
             onClick={() => submitted ? {} : handleFaceClick("🙂")}
           />

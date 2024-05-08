@@ -2,7 +2,7 @@
 'use server'
 import 'server-only'
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
-import { createClient } from '@supabase/supabase-js'
+import { createClient, createClientSchema } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 import { Database } from '@/lib/db_types'
 import { revalidatePath } from 'next/cache'
@@ -12,13 +12,7 @@ import { type Chat } from '@/lib/types'
 import { auth } from '@/auth'
 
 export async function getUserRole(id: string | undefined): Promise<any> {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    },
-    db: { schema: process.env.BIZGPT_ORGANIZATION } 
-  })
+  const supabase = createClientSchema()
   const role_data = await supabase
     .from('user_bizgpt_role')
     .select('role')
@@ -29,13 +23,7 @@ export async function getUserRole(id: string | undefined): Promise<any> {
 
 
 export async function getBookmarkedMessagesSupabase(id: string) {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    },
-    db: { schema: process.env.BIZGPT_ORGANIZATION } 
-  })
+  const supabase = createClientSchema()
   const { data } = await supabase
     .from('bookmarked_messages')
     .select('payload')
@@ -53,13 +41,7 @@ export async function submitBookmark(payload: object) {
   revalidateTag('bookmarks-cache')
 }
 export async function getBookmarksSupabase(id: string) {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    },
-    db: { schema: process.env.BIZGPT_ORGANIZATION } 
-  })
+  const supabase = createClientSchema()
   const { data } = await supabase
     .from('bookmarks')
     .select('payload')
@@ -70,13 +52,7 @@ export async function getBookmarksSupabase(id: string) {
 }
 
 export async function getFeedbacksSupabase(id: string) {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    },
-    db: { schema: process.env.BIZGPT_ORGANIZATION } 
-  })
+  const supabase = createClientSchema()
   const { data } = await supabase
     .from('feedbacks')
     .select('payload')
@@ -158,13 +134,7 @@ export async function getChats(userId?: string | null) {
     return []
   }
   try {
-    const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      },
-      db: { schema: process.env.BIZGPT_ORGANIZATION } 
-    })
+    const supabase = createClientSchema()
     const { data } = await supabase
       .from('chats')
       .select('payload')
@@ -179,13 +149,7 @@ export async function getChats(userId?: string | null) {
 }
 
 export async function getChatSupabase(id: string) {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    },
-    db: { schema: process.env.BIZGPT_ORGANIZATION } 
-  })
+  const supabase = createClientSchema()
   const { data } = await supabase
     .from('chats')
     .select('payload')
@@ -198,13 +162,7 @@ export async function getChatSupabase(id: string) {
 
 export async function removeChat({ id, path }: { id: string; path: string }) {
   try {
-    const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      },
-      db: { schema: process.env.BIZGPT_ORGANIZATION } 
-    })
+    const supabase = createClientSchema()
     await supabase.from('chats').delete().eq('chat_id', id).throwOnError()
 
     revalidatePath('/')
@@ -218,13 +176,7 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
 
 export async function clearChats() {
   try {
-    const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      },
-      db: { schema: process.env.BIZGPT_ORGANIZATION } 
-    })
+    const supabase = createClientSchema()
     await supabase.from('chats').delete().throwOnError()
     revalidatePath('/')
     return redirect('/')
@@ -237,13 +189,7 @@ export async function clearChats() {
 }
 
 export async function getSharedChat(id: string) {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    },
-    db: { schema: process.env.BIZGPT_ORGANIZATION } 
-  })
+  const supabase = createClientSchema()
   const { data } = await supabase
     .from('chats')
     .select('payload')
@@ -260,13 +206,7 @@ export async function shareChat(chat: Chat) {
     sharePath: `/share/${chat.id}`
   }
 
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    },
-    db: { schema: process.env.BIZGPT_ORGANIZATION } 
-  })
+  const supabase = createClientSchema()
   await supabase
     .from('chats')
     .update({ payload: payload as any })
