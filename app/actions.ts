@@ -25,6 +25,17 @@ export async function getChats(userId?: string | null) {
   }
 }
 
+export async function getAllChatSupabaseUserId(user_id: string) {
+  const supabase = createClientSchema()
+  const { data } = await supabase
+    .from('chats')
+    .select('payload')
+    .eq('user_id', user_id)
+    .maybeSingle()
+
+  return (data?.payload as Chat) ?? null
+}
+
 export async function getChat(id: string) {
   const supabase = createClientSchema()
   const { data } = await supabase
@@ -233,9 +244,9 @@ export async function getBookmarksLocal(username: string): Promise<JSON> {
   return output
 }
 
-export async function getFeedbacksLocal(username: string): Promise<JSON> {
+export async function getFeedbacksLocal(username: string, chat_id: string): Promise<JSON> {
   const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_FEEDBACK_RETRIEVE_PATH}`
-  const payload = { 'username': username };
+  const payload = { 'username': username, 'chat_id': chat_id };
   let output;
   const res = await fetch(url, {
     method: 'POST',
@@ -256,9 +267,9 @@ export async function getFeedbacksLocal(username: string): Promise<JSON> {
 }
 
 
-export async function getChatLocal(username: string) {
+export async function getChatLocal(username: string, chat_id: string) {
   const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_MESSAGES_RETRIEVE_PATH}`
-  const payload = { 'username': username };
+  const payload = { 'username': username, 'chat_id': chat_id };
   const res = await fetch(url, {
     method: 'POST',
     headers: {

@@ -3,7 +3,7 @@ import { nanoid } from '@/lib/utils'
 import { Bookmarks } from '@/components/original-chat/bookmarks'
 import { auth, authUser } from '@/auth'
 import { cookies } from 'next/headers'
-import { getChatSupabase, getChatLocal, getBookmarksLocal, getBookmarksSupabase, getFeedbacksLocal, getFeedbacksSupabase } from '@/app/actions'
+import { getChatSupabase, getChatLocal, getBookmarksLocal, getBookmarksSupabase, getFeedbacksLocal, getFeedbacksSupabase, getAllChatSupabaseUserId } from '@/app/actions'
 import { type Chat } from '@/lib/types'
 
 export const runtime = 'nodejs'
@@ -32,13 +32,14 @@ export default async function BookmarksPage() {
   const cookieStore = cookies()
   const session = await authUser()
   let bookmarks = { 'bookmarks' : {}};
-  let feedbacks = { 'feedbacks' : {}};
   let chat = { 'messages': {}}
+  chat = await getAllChatSupabaseUserId(session?.user?.id)
+
   let mode = process.env.PERSISTENCE_MODE;
   if (mode?.replace('"','') == 'supabase') 
   {
     bookmarks = await getBookmarksSupabase(session?.user?.id)
-    feedbacks = await getFeedbacksSupabase(session?.user?.id)
+
   }
 
   // [Correcting the JSON object schema]
@@ -49,22 +50,14 @@ export default async function BookmarksPage() {
     let temp_response_bookmarks = await getBookmarksLocal(session?.user?.email)
     if (!temp_response_bookmarks.hasOwnProperty('bookmarks')) bookmarks = { 'bookmarks': temp_response_bookmarks}
     else bookmarks = await getBookmarksLocal(session?.user?.email)
-    // Correcting the [feedbacks] schema
-    let temp_response_feedbacks = await getFeedbacksLocal(session?.user?.email)
-    if (!temp_response_feedbacks.hasOwnProperty('feedbacks')) feedbacks = { 'feedbacks': temp_response_feedbacks}
-    else feedbacks = await getFeedbacksLocal(session?.user?.email)
   } 
   
   if (session?.user?.id && mode?.replace('"','') == 'supabase') {
-    chat = await getChatSupabase(session?.user?.id)
     const bookmarked_messages = await getBookmarkedMessages(chat, bookmarks)
     return <Bookmarks id={session?.user?.id} username={session?.user?.email} initialMessages={bookmarked_messages.messages} bookmarks={undefined} feedbacks={undefined} bookmark_page={true} />
   }
       // Correcting the [chat] schema
   else if (session?.user?.id && mode?.replace('"','') == 'local'){
-    let temp_response_chat = await getChatLocal(session?.user?.email)
-    if (!temp_response_chat.hasOwnProperty('messages')) chat = { 'messages': temp_response_chat}
-    else chat = await getChatLocal(session?.user?.email)
     const bookmarked_messages = await getBookmarkedMessages(chat, bookmarks)
     return <Bookmarks id={session?.user?.id} username={session?.user?.email} initialMessages={bookmarked_messages.messages} bookmarks={undefined} feedbacks={undefined} bookmark_page={true} />
   } 
