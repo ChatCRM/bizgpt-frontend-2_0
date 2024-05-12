@@ -4,13 +4,13 @@ import { cn } from '@/lib/utils'
 import GlobalConfig from '@/app/app.config.js'
 
 const TextDirection = process.env.NEXT_PUBLIC_TEXT_DIRECTION
-const clientFooterName = process.env.NEXT_PUBLIC_CLIENT_BRANDING_NAME ? process.env.NEXT_PUBLIC_CLIENT_BRANDING_NAME : 'BizGPT' 
+
+const FooterClientText = process.env.NEXT_PUBLIC_FOOTER_CLIENT_TEXT ? process.env.NEXT_PUBLIC_FOOTER_CLIENT_TEXT : 'BizGPT'
+const UseFooterClientText = process.env.NEXT_PUBLIC_USE_FOOTER_CLIENT_TEXT ? ['true', '1', 't'].includes(process.env.NEXT_PUBLIC_USE_FOOTER_CLIENT_TEXT.toLowerCase()) : true
 
 
 export function FooterText({ className, ...props }: React.ComponentProps<'p'>) {
-  // Language and Translation
-  // var TranslationData = require(`@/translation/${process.env.BIZGPT_FRONTEND_LANGUAGE}.json`);
-  var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`);
+
   return (
     <p
       dir={TextDirection}
@@ -20,7 +20,7 @@ export function FooterText({ className, ...props }: React.ComponentProps<'p'>) {
       )}
       {...props}
     >
-      {`${TranslationData["Made with ❤️ by"]} ${clientFooterName}`}
+      {UseFooterClientText ? FooterClientText : undefined}
       
     </p>
   )
