@@ -1,22 +1,23 @@
-import { nanoid } from '@/lib/utils'
-import { Chat } from '@/components/chat'
-import { AI } from '@/lib/chat/actions'
-import { auth } from '@/auth'
-import { Session } from '@/lib/types'
-import { getMissingKeys } from '../actions'
+//@ts-nocheck
+import { nanoid, generateUUID } from '@/lib/utils'
+import { Chat } from '@/components/original-chat/chat'
+import { auth, authUser } from '@/auth'
+import { cookies } from 'next/headers'
+import { getChatSupabase, getChatLocal, getBookmarksLocal, getBookmarksSupabase, getFeedbacksLocal, getFeedbacksSupabase } from '@/components/original-chat/actions'
 
-export const metadata = {
-  title: 'Next.js AI Chatbot'
-}
+export const runtime = 'nodejs'
+export const preferredRegion = 'home'
+export const dynamic = 'force-dynamic';
 
 export default async function IndexPage() {
-  const id = nanoid()
-  const session = (await auth()) as Session
-  const missingKeys = await getMissingKeys()
+  const cookieStore = cookies()
+  const session = await authUser()
+  const id = generateUUID()
 
-  return (
-    <AI initialAIState={{ chatId: id, messages: [] }}>
-      <Chat id={id} session={session} missingKeys={missingKeys} />
-    </AI>
-  )
+  let bookmarks = { 'bookmarks': {} };
+  let feedbacks = { 'feedbacks': {} };
+  let chat = { 'messages': [], 'id': id, 'userId': session?.user?.id }
+
+  return <Chat id={id} user_id={session?.user?.id} username={session?.user?.email} initialMessages={chat.messages} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={false} />
+
 }

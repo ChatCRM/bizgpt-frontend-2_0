@@ -1,147 +1,159 @@
 'use server'
-
-import { revalidatePath } from 'next/cache'
+import 'server-only'
+import { createClient, createClientSchema } from '@/utils/supabase/server'
+import { cookies } from 'next/headers'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { kv } from '@vercel/kv'
-
-import { auth } from '@/auth'
+import { authUser } from '@/auth'
 import { type Chat } from '@/lib/types'
 
 export async function getChats(userId?: string | null) {
   if (!userId) {
     return []
   }
-
   try {
-    const pipeline = kv.pipeline()
-    const chats: string[] = await kv.zrange(`user:chat:${userId}`, 0, -1, {
-      rev: true
-    })
-
-    for (const chat of chats) {
-      pipeline.hgetall(chat)
-    }
-
-    const results = await pipeline.exec()
-
-    return results as Chat[]
+    const supabase = createClientSchema()
+    const { data } = await supabase
+      .from('chats')
+      .select('payload')
+      .order('payload->createdAt', { ascending: false })
+      .eq('user_id', userId)
+      .throwOnError()
+    return (data?.map(entry => entry.payload) as Chat[]) ?? []
   } catch (error) {
     return []
   }
 }
 
-export async function getChat(id: string, userId: string) {
-  const chat = await kv.hgetall<Chat>(`chat:${id}`)
+export async function getAllChatSupabaseUserId(user_id: string) {
+  const supabase = createClientSchema()
+  const { data } = await supabase
+    .from('chats')
+    .select('payload')
+    .eq('user_id', user_id)
+    .maybeSingle()
 
-  if (!chat || (userId && chat.userId !== userId)) {
-    return null
-  }
+  return (data?.payload as Chat) ?? null
+}
 
-  return chat
+export async function getChat(id: string) {
+  const supabase = createClientSchema()
+  const { data } = await supabase
+    .from('chats')
+    .select('payload')
+    .eq('chat_id', id)
+    .maybeSingle()
+
+  return (data?.payload as Chat) ?? null
 }
 
 export async function removeChat({ id, path }: { id: string; path: string }) {
-  const session = await auth()
+  const session = await authUser()
 
   if (!session) {
     return {
       error: 'Unauthorized'
     }
   }
+  try {
+    const supabase = createClientSchema()
+    await supabase.from('chats').delete().eq('chat_id', id).throwOnError()
 
-  //Convert uid to string for consistent comparison with session.user.id
-  const uid = String(await kv.hget(`chat:${id}`, 'userId'))
-
-  if (uid !== session?.user?.id) {
+    revalidatePath('/')
+    return revalidatePath(path)
+  } catch (error) {
     return {
       error: 'Unauthorized'
     }
   }
-
-  await kv.del(`chat:${id}`)
-  await kv.zrem(`user:chat:${session.user.id}`, `chat:${id}`)
-
-  revalidatePath('/')
-  return revalidatePath(path)
 }
 
-export async function clearChats() {
-  const session = await auth()
-
-  if (!session?.user?.id) {
-    return {
-      error: 'Unauthorized'
+  export async function clearChats() {
+    const session = await authUser()
+    try {
+      const supabase = createClientSchema()
+      await supabase.from('chats').delete().eq('user_id', session?.user?.id).throwOnError()
+      return revalidatePath('/')
+      // return redirect('/')
+    } catch (error) {
+      console.log('clear chats error', error)
+      return {
+        error: 'Unauthorized'
+      }
     }
   }
-
-  const chats: string[] = await kv.zrange(`user:chat:${session.user.id}`, 0, -1)
-  if (!chats.length) {
-    return redirect('/')
-  }
-  const pipeline = kv.pipeline()
-
-  for (const chat of chats) {
-    pipeline.del(chat)
-    pipeline.zrem(`user:chat:${session.user.id}`, chat)
-  }
-
-  await pipeline.exec()
-
-  revalidatePath('/')
-  return redirect('/')
-}
-
-export async function getSharedChat(id: string) {
-  const chat = await kv.hgetall<Chat>(`chat:${id}`)
-
-  if (!chat || !chat.sharePath) {
-    return null
-  }
-
-  return chat
-}
-
-export async function shareChat(id: string) {
-  const session = await auth()
-
-  if (!session?.user?.id) {
-    return {
-      error: 'Unauthorized'
-    }
-  }
-
-  const chat = await kv.hgetall<Chat>(`chat:${id}`)
-
-  if (!chat || chat.userId !== session.user.id) {
-    return {
-      error: 'Something went wrong'
-    }
-  }
-
-  const payload = {
-    ...chat,
-    sharePath: `/share/${chat.id}`
-  }
-
-  await kv.hmset(`chat:${chat.id}`, payload)
-
-  return payload
-}
+  
 
 export async function saveChat(chat: Chat) {
-  const session = await auth()
+  const session = await authUser()
 
   if (session && session.user) {
-    const pipeline = kv.pipeline()
-    pipeline.hmset(`chat:${chat.id}`, chat)
-    pipeline.zadd(`user:chat:${chat.userId}`, {
-      score: Date.now(),
-      member: `chat:${chat.id}`
-    })
-    await pipeline.exec()
+    const supabase = createClientSchema()
+    await supabase.from('chats').upsert({ id: chat.id, user_id: chat.userId, payload: chat }).throwOnError()
   } else {
     return
   }
+}
+
+export async function getSharedChat(id: string) {
+  const supabase = createClientSchema()
+  const { data } = await supabase
+    .from('chats')
+    .select('payload')
+    .eq('chat_id', id)
+    .not('payload->sharePath', 'is', null)
+    .maybeSingle()
+
+  return (data?.payload as Chat) ?? null
+}
+
+export async function shareChat(id: string) {
+  const supabase = createClientSchema()
+
+  const { data: chat } = await supabase
+  .from('chats')
+  .select('payload')
+  .eq('id', id)
+  .maybeSingle()
+
+  const payload = {
+    ...chat,
+    sharePath: `/share/${id}`
+  }
+
+  // await supabase
+  //   .from('chats')
+  //   .update({ payload: payload})
+  //   .eq('id', id)
+  //   .throwOnError()
+  if(chat)
+    return chat.payload
+  else
+    return
+}
+
+export async function renameChat(id: string, name: string) {
+  const supabase = createClientSchema()
+  const { data: chat } = await supabase
+  .from('chats')
+  .select('payload')
+  .eq('chat_id', id)
+  .maybeSingle()
+
+  const payload = {
+    ...chat?.payload
+  }
+  payload.title = name
+
+  await supabase
+    .from('chats')
+    .update({ payload: payload})
+    .eq('chat_id', id)
+    .throwOnError()
+  if(chat)
+    return chat.payload
+  else
+    return
 }
 
 export async function refreshHistory(path: string) {
@@ -153,4 +165,136 @@ export async function getMissingKeys() {
   return keysRequired
     .map(key => (process.env[key] ? '' : key))
     .filter(key => key !== '')
+}
+
+
+
+
+// old-Chat components
+export async function getUserRole(id: string | undefined): Promise<any> {
+  const supabase = createClientSchema()
+  const role_data = await supabase
+    .from('user_bizgpt_role')
+    .select('role')
+    .eq('user', id).maybeSingle()
+
+  return role_data.data?.role
+}
+
+// deprecated
+export async function getBookmarkedMessagesSupabase(id: string) {
+  const supabase = createClientSchema()
+  const { data } = await supabase
+    .from('bookmarked_messages')
+    .select('payload')
+    .eq('id', id)
+    .maybeSingle()
+
+  return (data?.payload) ?? null
+}
+
+
+export async function submitFeedback(payload: object) {
+  revalidateTag('feedbacks-cache')
+}
+export async function submitBookmark(payload: object) {
+  revalidateTag('bookmarks-cache')
+}
+export async function getBookmarksSupabase(id: string) {
+  const supabase = createClientSchema()
+  const { data } = await supabase
+    .from('bookmarks')
+    .select('payload')
+    .eq('chat_id', id)
+    .maybeSingle()
+
+  return (data?.payload) ?? null
+}
+
+export async function getFeedbacksSupabase(id: string) {
+  const supabase = createClientSchema()
+  const { data } = await supabase
+    .from('feedbacks')
+    .select('payload')
+    .eq('chat_id', id)
+    .maybeSingle()
+
+  return (data?.payload) ?? null
+}
+
+export async function getBookmarksLocal(username: string): Promise<JSON> {
+  const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_BOOKMARK_RETRIEVE_PATH}`
+  const payload = { 'username': username };
+  let output;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${process.env.BizGPT_CLIENT_API_TOKEN_FRONTEND}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload),
+    next: { revalidate: 5, tags: ['bookmarks-cache'] }
+  })
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch/retrieve bookmark data - The main component')
+  }
+  output = await res.json();
+  return output
+}
+
+export async function getFeedbacksLocal(username: string, chat_id: string): Promise<JSON> {
+  const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_FEEDBACK_RETRIEVE_PATH}`
+  const payload = { 'username': username, 'chat_id': chat_id };
+  let output;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${process.env.BizGPT_CLIENT_API_TOKEN_FRONTEND}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload),
+    next: { revalidate: 5, tags: ['feedbacks-cache'] }
+  })
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch/retrieve feedback data - The main component')
+  }
+  output = await res.json();
+  return output
+}
+
+
+export async function getChatLocal(username: string, chat_id: string) {
+  const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_MESSAGES_RETRIEVE_PATH}`
+  const payload = { 'username': username, 'chat_id': chat_id };
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${process.env.BizGPT_CLIENT_API_TOKEN_FRONTEND}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch/retrieve chat data - The main component')
+  }
+  const data = await res.json();
+
+  return (data as Chat) ?? null
+}
+
+export async function getChatSupabase(id: string) {
+  const supabase = createClientSchema()
+  const { data } = await supabase
+    .from('chats')
+    .select('payload')
+    .eq('id', id)
+    .maybeSingle()
+
+  return (data?.payload as Chat) ?? null
 }

@@ -30,7 +30,6 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
   const isActive = pathname === chat.path
   const [newChatId, setNewChatId] = useLocalStorage('newChatId', null)
   const shouldAnimate = index === 0 && isActive && newChatId
-
   if (!chat?.id) return null
 
   return (

@@ -1,11 +1,15 @@
+// @ts-nocheck 
 import { type Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 
-import { auth } from '@/auth'
-import { getChat, getMissingKeys } from '@/app/actions'
-import { Chat } from '@/components/chat'
-import { AI } from '@/lib/chat/actions'
-import { Session } from '@/lib/types'
+import { auth, authUser } from '@/auth'
+import { getChatSupabase, getChatLocal, getBookmarksLocal, getFeedbacksLocal, getBookmarksSupabase, getFeedbacksSupabase } from '@/components/original-chat/actions'
+import { Chat } from '@/components/original-chat/chat'
+import { cookies } from 'next/headers'
+
+export const runtime = 'nodejs'
+export const preferredRegion = 'home'
+export const dynamic = 'force-dynamic';
 
 export interface ChatPageProps {
   params: {
@@ -13,48 +17,58 @@ export interface ChatPageProps {
   }
 }
 
-export async function generateMetadata({
-  params
-}: ChatPageProps): Promise<Metadata> {
-  const session = await auth()
+// export async function generateMetadata({
+//   params
+// }: ChatPageProps): Promise<Metadata> {
+//   const cookieStore = cookies()
+//   const session = await authUser()
 
-  if (!session?.user) {
-    return {}
-  }
+//   if (!session?.user) {
+//     return {}
+//   }
 
-  const chat = await getChat(params.id, session.user.id)
-  return {
-    title: chat?.title.toString().slice(0, 50) ?? 'Chat'
-  }
-}
+//   const chat = await getChat(params.id)
+//   return {
+//     title: chat?.title.toString().slice(0, 50) ?? 'Chat'
+//   }
+// }
 
 export default async function ChatPage({ params }: ChatPageProps) {
-  const session = (await auth()) as Session
-  const missingKeys = await getMissingKeys()
+  const cookieStore = cookies()
+  const session = await authUser()
 
   if (!session?.user) {
-    redirect(`/login?next=/chat/${params.id}`)
+    redirect(`/sign-in?next=/chat/${params.id}`)
   }
 
-  const userId = session.user.id as string
-  const chat = await getChat(params.id, userId)
+  let bookmarks = { 'bookmarks': {} };
+  let feedbacks = { 'feedbacks': {} };
+  let mode = process.env.PERSISTENCE_MODE;
+
+  const chat = await getChatSupabase(params.id)
 
   if (!chat) {
-    redirect('/')
-  }
-
-  if (chat?.userId !== session?.user?.id) {
     notFound()
   }
 
-  return (
-    <AI initialAIState={{ chatId: chat.id, messages: chat.messages }}>
-      <Chat
-        id={chat.id}
-        session={session}
-        initialMessages={chat.messages}
-        missingKeys={missingKeys}
-      />
-    </AI>
-  )
+  if (mode?.replace('"','') == 'supabase') 
+  {
+    bookmarks = await getBookmarksSupabase(session?.user?.id, params.id)
+    feedbacks = await getFeedbacksSupabase(session?.user?.id, params.id)
+  }
+
+  else if (mode?.replace('"','') == 'local'){
+
+    // correcting the [bookmarks] schema
+    let temp_response_bookmarks = await getBookmarksLocal(session?.user?.email, params.id)
+    if (!temp_response_bookmarks.hasOwnProperty('bookmarks')) bookmarks = { 'bookmarks': temp_response_bookmarks}
+    else bookmarks = await getBookmarksLocal(session?.user?.email)
+    // correcting the [feedbacks] schema
+    let temp_response_feedbacks = await getFeedbacksLocal(session?.user?.email, params.id)
+    if (!temp_response_feedbacks.hasOwnProperty('feedbacks')) feedbacks = { 'feedbacks': temp_response_feedbacks}
+    else feedbacks = await getFeedbacksLocal(session?.user?.email)
+  } 
+
+
+  return <Chat id={chat.id} user_id={session?.user?.id} initialMessages={chat.messages} username={session?.user?.email} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={false} />
 }

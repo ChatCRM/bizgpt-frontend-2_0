@@ -16,8 +16,8 @@ import {
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { IconShare, IconSpinner, IconTrash } from '@/components/ui/icons'
-import { ChatShareDialog } from '@/components/chat-share-dialog'
+import { IconShare, IconSpinner, IconTrash, IconEdit } from '@/components/ui/icons'
+import { ChatShareDialog, ChatRenameDialog } from '@/components/chat-share-dialog'
 import {
   Tooltip,
   TooltipContent,
@@ -28,22 +28,38 @@ interface SidebarActionsProps {
   chat: Chat
   removeChat: (args: { id: string; path: string }) => ServerActionResult<void>
   shareChat: (id: string) => ServerActionResult<Chat>
+  renameChat: (id: string, name: string) => ServerActionResult<Chat>
 }
 
 export function SidebarActions({
   chat,
   removeChat,
-  shareChat
+  shareChat,
+  renameChat
 }: SidebarActionsProps) {
   const router = useRouter()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
+  const [renameDialogOpen, setRenameDialogOpen] = React.useState(false)
   const [isRemovePending, startRemoveTransition] = React.useTransition()
 
   return (
     <>
       <div className="">
         <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              className="size-7 p-0 hover:bg-background"
+              onClick={() => setRenameDialogOpen(true)}
+            >
+              <IconEdit />
+              <span className="sr-only">Rename</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Rename</TooltipContent>
+        </Tooltip>
+        {/* <Tooltip>
           <TooltipTrigger asChild>
             <Button
               variant="ghost"
@@ -55,7 +71,7 @@ export function SidebarActions({
             </Button>
           </TooltipTrigger>
           <TooltipContent>Share chat</TooltipContent>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -77,6 +93,13 @@ export function SidebarActions({
         open={shareDialogOpen}
         onOpenChange={setShareDialogOpen}
         onCopy={() => setShareDialogOpen(false)}
+      />
+      <ChatRenameDialog
+        chat={chat}
+        renameChat={renameChat}
+        open={renameDialogOpen}
+        onOpenChange={setRenameDialogOpen}
+        onCopy={() => setRenameDialogOpen(false)}
       />
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
