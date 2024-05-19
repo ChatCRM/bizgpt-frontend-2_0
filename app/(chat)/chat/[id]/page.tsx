@@ -53,8 +53,8 @@ export default async function ChatPage({ params }: ChatPageProps) {
 
   if (mode?.replace('"','') == 'supabase') 
   {
-    bookmarks = await getBookmarksSupabase(session?.user?.id, id)
-    feedbacks = await getFeedbacksSupabase(session?.user?.id, id)
+    bookmarks = await getBookmarksSupabase(session?.user?.id, params.id)
+    feedbacks = await getFeedbacksSupabase(session?.user?.id, params.id)
   }
 
   else if (mode?.replace('"','') == 'local'){

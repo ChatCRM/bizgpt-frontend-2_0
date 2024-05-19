@@ -70,9 +70,15 @@ export async function POST(req: Request) {
           }
         ]
       }
-      if (mode == 'supabase')
-        // Insert chat into database.
-        await supabase.from('chats').upsert({ 'chat_id': id, 'user_id': userId, 'payload': payload }).throwOnError()
+      // Insert chat into database.
+      const { data: record, error: record_error } = await supabase.from('chats').select('*').eq('chat_id', json.id).maybeSingle().throwOnError()
+
+      if (record?.id){
+        await supabase.from('chats').update({'payload': payload }).eq('chat_id', json.id)
+      }
+      else{
+        await supabase.from('chats').insert({ 'chat_id': id, 'user_id': userId, 'payload': payload })
+      }
     }
   })
 

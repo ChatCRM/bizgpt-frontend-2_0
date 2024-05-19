@@ -3,7 +3,7 @@ import { nanoid } from '@/lib/utils'
 import { Bookmarks } from '@/components/original-chat/bookmarks'
 import { auth, authUser } from '@/auth'
 import { cookies } from 'next/headers'
-import { getChatSupabase, getChatLocal, getBookmarksLocal, getBookmarksSupabase, getFeedbacksLocal, getFeedbacksSupabase, getAllChatSupabaseUserId } from '@/app/actions'
+import { getAllBookmarksSupabase,  getAllChatSupabaseUserId } from '@/app/actions'
 import { type Chat } from '@/lib/types'
 
 export const runtime = 'nodejs'
@@ -38,7 +38,7 @@ export default async function BookmarksPage() {
   let mode = process.env.PERSISTENCE_MODE;
   if (mode?.replace('"','') == 'supabase') 
   {
-    bookmarks = await getBookmarksSupabase(session?.user?.id)
+    bookmarks = await getAllBookmarksSupabase(session?.user?.id)
 
   }
 

@@ -181,7 +181,7 @@ export async function getUserRole(id: string | undefined): Promise<any> {
   return role_data.data?.role
 }
 
-
+// deprecated
 export async function getBookmarkedMessagesSupabase(id: string) {
   const supabase = createClientSchema()
   const { data } = await supabase
@@ -205,7 +205,7 @@ export async function getBookmarksSupabase(id: string) {
   const { data } = await supabase
     .from('bookmarks')
     .select('payload')
-    .eq('id', id)
+    .eq('chat_id', id)
     .maybeSingle()
 
   return (data?.payload) ?? null
@@ -216,7 +216,7 @@ export async function getFeedbacksSupabase(id: string) {
   const { data } = await supabase
     .from('feedbacks')
     .select('payload')
-    .eq('id', id)
+    .eq('chat_id', id)
     .maybeSingle()
 
   return (data?.payload) ?? null

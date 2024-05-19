@@ -21,7 +21,7 @@ export async function getUserRole(id: string | undefined): Promise<any> {
   return role_data.data?.role
 }
 
-
+// deprecated
 export async function getBookmarkedMessagesSupabase(id: string) {
   const supabase = createClientSchema()
   const { data } = await supabase
@@ -40,23 +40,50 @@ export async function submitFeedback(payload: object) {
 export async function submitBookmark(payload: object) {
   revalidateTag('bookmarks-cache')
 }
-export async function getBookmarksSupabase(id: string) {
+
+export async function getBookmarksSupabase(user_id: string, chat_id: string) {
+
   const supabase = createClientSchema()
   const { data } = await supabase
     .from('bookmarks')
     .select('payload')
-    .eq('id', id)
+    .eq('user_id', user_id)
+    .eq('chat_id', chat_id)
     .maybeSingle()
 
   return (data?.payload) ?? null
 }
 
-export async function getFeedbacksSupabase(id: string, ) {
+export async function getAllBookmarksSupabase(user_id: string) {
+
+  const supabase = createClientSchema()
+  const { data } = await supabase
+    .from('bookmarks')
+    .select('payload')
+    .eq('user_id', user_id)
+    .maybeSingle()
+
+  return (data?.payload) ?? null
+}
+
+export async function getFeedbacksSupabase(user_id: string, chat_id: string) {
   const supabase = createClientSchema()
   const { data } = await supabase
     .from('feedbacks')
     .select('payload')
-    .eq('id', id)
+    .eq('user_id', user_id)
+    .eq('chat_id', chat_id)
+    .maybeSingle()
+
+  return (data?.payload) ?? null
+}
+
+export async function getAllFeedbacksSupabase(user_id: string) {
+  const supabase = createClientSchema()
+  const { data } = await supabase
+    .from('feedbacks')
+    .select('payload')
+    .eq('user_id', user_id)
     .maybeSingle()
 
   return (data?.payload) ?? null
