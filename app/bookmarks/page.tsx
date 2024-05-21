@@ -3,7 +3,7 @@ import { nanoid } from '@/lib/utils'
 import { Bookmarks } from '@/components/original-chat/bookmarks'
 import { auth, authUser } from '@/auth'
 import { cookies } from 'next/headers'
-import { getAllChatSupabaseUserId } from '@/app/actions'
+import { getAllChatSupabaseUserId, getBookmarksLocal  } from '@/app/actions'
 import { getAllBookmarksSupabase } from '@/components/original-chat/actions'
 import { type Chat } from '@/lib/types'
 
