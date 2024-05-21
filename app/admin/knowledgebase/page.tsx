@@ -18,7 +18,7 @@ import { AdministrationComponent } from '@/app/admin/components/administration-c
 export default async function KnowledgeBaseOverView() {
   return (
     <div className="space-y-6 w-full group overflow-auto pl-12 pt-10 peer-[[data-state=open]]:lg:pl-[350px] peer-[[data-state=open]]:xl:pl-[350px]">
-      <AdministrationComponent/>
+      {/* <AdministrationComponent/> */}
       <div>
         <h3 className="text-lg font-medium" dir={TextDirection}>
           <GetTranslation text="Knowledgebase"/>
