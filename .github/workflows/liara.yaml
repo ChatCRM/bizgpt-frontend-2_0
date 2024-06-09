@@ -1,0 +1,30 @@
+name: Asia-Insurance-CD-Liara
+
+on:
+  push:
+    branches:
+      - asia-excel
+      - vakilyar_chat
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Liara CLI
+        run: npm i -g @liara/cli@6
+
+      - name: Deploy
+        env:
+          LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
+        run: |
+          if [ ${{ github.ref }} == 'refs/heads/asia-excel' ]; then
+            liara deploy --app="asia-insight" --api-token="$LIARA_TOKEN" --no-app-logs
+          fi
+          if [ ${{ github.ref }} == 'refs/heads/vakilyar_chat' ]; then
+            liara deploy --app="chat-vakilyar" --api-token="$LIARA_TOKEN" --no-app-logs
+          fi
