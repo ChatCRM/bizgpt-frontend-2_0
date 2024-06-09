@@ -1,0 +1,8 @@
+{
+  "next": {
+    "modifyConfig": false
+  },
+  "node": {
+    "version": "20"
+  }
+}
