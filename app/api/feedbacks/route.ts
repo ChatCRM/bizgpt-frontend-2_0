@@ -18,15 +18,22 @@ export async function POST(req: Request) {
 
   if (mode?.replace('"','') == "supabase") {
     const supabase = createClientSchema()
-    const id = userId
     const user_id = userId
-    const payload = { feedbacks: json.data }
+    const payload = { feedbacks: json.data, chat_id: chat_id }
     if (!userId) {
       return new Response('Unauthorized', {
         status: 401
       })
     }
-    await supabase.from('feedbacks').upsert({ id, user_id, payload }).throwOnError()
+    // Insert chat into database.
+    const { data: record, error: record_error } = await supabase.from('feedbacks').select('*').eq('chat_id', chat_id).maybeSingle().throwOnError()
+
+    if (record?.id){
+      await supabase.from('feedbacks').update({'payload': payload }).eq('chat_id',chat_id)
+    }
+    else{
+      await supabase.from('feedbacks').insert({ 'chat_id': chat_id, 'user_id': userId, 'payload': payload })
+    }
   }
   else if (mode?.replace('"','') == "local") {
     const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_FEEDBACK_PERSIST_PATH}`

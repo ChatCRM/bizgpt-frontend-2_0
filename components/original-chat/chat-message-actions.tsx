@@ -202,7 +202,6 @@ export function ChatMessageActionsFeedback({
   const [faceScore, setFaceScore] = useState(null);
   const TextDirection = process.env.NEXT_PUBLIC_TEXT_DIRECTION
   const feedback_state = feedbacks?.feedbacks[`feedback_${index_fixer(index)}`]?.score
-
   // Language and Translation
   var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`);
 
@@ -210,7 +209,12 @@ export function ChatMessageActionsFeedback({
     if (index % 2 != 0) {
       if (feedback_state) {
         setSubmitted(true);
-        setFaceScore(feedback_state);
+        if (typeof feedback_state == "number"){
+          setFaceScore(FaceToScoreMappingReverse[feedback_state]);
+        }
+        else{
+          setFaceScore(feedback_state);
+        }
       }
     }
   }, [feedback_state, index])
