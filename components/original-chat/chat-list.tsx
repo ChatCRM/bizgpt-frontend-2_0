@@ -17,7 +17,6 @@ export function ChatList({ chat_id, messages, user_id, username, bookmarks, feed
   if (!messages.length) {
     return null
   }
-  console.log(feedbacks)
   return (
     <div className="relative mx-auto max-w-2xl px-4">
       {messages.map((message, index) => (

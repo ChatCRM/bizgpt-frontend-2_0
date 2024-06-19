@@ -95,7 +95,6 @@ export async function getVectorDataLogLocal(): Promise<JSON> {
 
 export async function getFeedbacksLocalAdmin(): Promise<JSON> {
   const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_FEEDBACK_ADMIN_RETRIEVE_PATH}`
-  console.log(url)
   let output;
   const res = await fetch(url, {
     method: 'GET',
@@ -111,6 +110,6 @@ export async function getFeedbacksLocalAdmin(): Promise<JSON> {
     throw new Error('Failed to fetch/retrieve feedback (admin-detail) data - The main component')
   }
   output = await res.json();
-  console.log(output)
+
   return output
 }
