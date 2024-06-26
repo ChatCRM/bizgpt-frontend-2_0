@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  front:
+    image: bizgpt/bizgpt-frontend:1.0.0
+    build: .
+    command: sh -c "npm run start"
+    volumes:
+      - .:/app
+    container_name: front-${PROJECT_NAME}
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.23.0-alpine
+    restart: unless-stopped
+    volumes:
+      - ./nginx/templates/:/etc/nginx/templates/:ro
+      - ./.next/static:/_next/static
+      - /var/lib/letsencrypt:/var/lib/letsencrypt:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    ports:
+      - 80:80
+      - 443:${NODE_PORT}
+    env_file:
+      - .env
+    depends_on:
+      - front
+    container_name: nginx-${PROJECT_NAME}

@@ -7,6 +7,16 @@ import { redirect } from 'next/navigation'
 import { authUser } from '@/auth'
 import { type Chat } from '@/lib/types'
 
+export async function IFrameGetCred(url: string, token: string | string[]){
+  const requestHeaders = new Headers()
+  requestHeaders.set('Authorization', `Bearer ${token}`)
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: requestHeaders,
+  })
+  return await res.json()
+}
+
 export async function getChats(userId?: string | null) {
   if (!userId) {
     return []
