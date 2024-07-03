@@ -1,0 +1,52 @@
+upstream bizgpt_front {
+    server front:${NODE_PORT};
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name ${SITE_URL};
+
+    server_tokens off;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 ${WEB_PROTOCOL}://${SITE_URL}$request_uri;
+    }
+
+}
+
+server {
+    listen ${NODE_PORT} default_server ssl http2;
+    listen [::]:${NODE_PORT} ssl http2;#
+    server_name ${SITE_URL};
+
+    #ssl_certificate /etc/nginx/ssl/live/${SITE_URL}/fullchain.pem;
+    #ssl_certificate_key /etc/nginx/ssl/live/${SITE_URL}/privkey.pem;
+
+    ssl_certificate /etc/letsencrypt/live/${SITE_URL}/fullchain.pem;
+    ssl_certificate_key   /etc/letsencrypt/live/${SITE_URL}/privkey.pem;
+
+    location /_next/static {
+        alias /_next/static/;
+    }
+    
+    if ($host !~* ^(${SITE_URL}|www.${SITE_URL})$)
+    {
+        return 444;
+    }
+
+    location / {
+        proxy_pass http://bizgpt_front;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_connect_timeout ${NGINX_PROXY_CONNECT_TIMEOUT}s;
+        proxy_read_timeout ${NGINX_PROXY_READ_TIMEOUT}s;
+        proxy_redirect off;
+        proxy_buffering off;
+    }
+}

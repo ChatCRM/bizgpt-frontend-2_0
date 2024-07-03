@@ -5,8 +5,6 @@ services:
     command: sh -c "cd app && npm run start"
     volumes:
       - .:/app
-    # ports:
-    #  - 4443:${NODE_PORT}
     container_name: front-${PROJECT_NAME}
     restart: unless-stopped
     labels:
@@ -14,23 +12,20 @@ services:
       - "traefik.http.routers.front-${PROJECT_NAME}.tls=true"
       - "traefik.http.routers.front-${PROJECT_NAME}.tls.domains[0].main=${SITE_URL}"
       - "traefik.http.routers.front-${PROJECT_NAME}.tls.certresolver=myresolver"
-      - "traefik.docker.network=local-traefik-network"
     networks:
       - local-traefik-network
-
-# /_next/static
-#PathPrefix(`/products/`
+      
   nginx:
     image: nginx:1.23.0-alpine
     restart: unless-stopped
     volumes:
-      - ./nginx/templates/:/etc/nginx/templates/:ro
+      - ./nginx/templates/default.conf.template.mixed:/etc/nginx/templates/default.conf.template:ro
       - ./.next/static:/_next/static
       - /var/lib/letsencrypt:/var/lib/letsencrypt:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
-#    ports:
+    ports:
       # - 80:80
-#      - ${NGINX_PORT}:${NODE_PORT}
+      - ${NGINX_PORT}:${NODE_PORT}
     env_file:
       - .env
     depends_on:
@@ -41,11 +36,13 @@ services:
       - "traefik.http.routers.nginx-${PROJECT_NAME}.tls=true"
       - "traefik.http.routers.nginx-${PROJECT_NAME}.tls.domains[0].main=${SITE_URL}"
       - "traefik.http.routers.nginx-${PROJECT_NAME}.tls.certresolver=myresolver"
-      - "traefik.docker.network=local-traefik-network"
     networks:
       - local-traefik-network
+      - network-1
 
 
 networks:
   local-traefik-network:
     external: true
+  network-1:
+    external: false
