@@ -1,7 +1,8 @@
 version: '3.9'
 services:
   front:
-    image: node:20-alpine
+    image: bizgpt/bizgpt-frontend:2.0.0
+    build: .
     command: sh -c "cd app && npm run start"
     volumes:
       - .:/app
