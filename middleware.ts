@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      cookieOptions: {domain: '', secure: 'false', maxAge: 604800, path: '', sameSite: 'None'},
+      cookieOptions: {domain: '', secure: 'true', maxAge: 604800, path: '', sameSite: 'None'},
       cookies: {
         get(name: string) {
           return request.cookies.get(name)?.value
