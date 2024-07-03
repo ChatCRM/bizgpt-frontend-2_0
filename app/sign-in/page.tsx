@@ -5,7 +5,7 @@ import { LoginFormSearchParams } from '@/components/login-form-searchparams'
 import { Separator } from '@/components/ui/separator'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-
+import axios from 'axios';
 
 export default async function SignInPage({
   searchParams
@@ -31,14 +31,18 @@ export default async function SignInPage({
 
     if (process.env.DEBUG_MODE) console.log("DEBUG MODE - IFRAME ===> TOKEN: ", token)
     const url = `${process.env.IFRAME_AUTH_API_BASE_URL}/${process.env.IFRAME_AUTH_API_PATH_URL}`
-    const requestHeaders: HeadersInit = new Headers();
-    requestHeaders.set("Authorization", `Bearer ${token}`);
-    requestHeaders.append("Cookie", "ASP.NET_SessionId=rdes0ve3eh4hbw4e0jbmrga0");
-    const iframe_auth_response = await fetch(url, {
-      method: 'GET',
-      headers: requestHeaders,
-    });
-    const iframe_auth_response_json = await iframe_auth_response.json()
+
+    const result = await axios({
+      method: 'GET', 
+      url: url, 
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      } 
+    })
+
+
+
+    const iframe_auth_response_json = await result.data
     if (process.env.DEBUG_MODE) console.log("DEBUG MODE - IFRAME ===> RESPONSE: ", iframe_auth_response_json)
     const user_id = iframe_auth_response_json.Success == true ? iframe_auth_response_json?.Family[0]?.DetailsID : undefined
     return (
