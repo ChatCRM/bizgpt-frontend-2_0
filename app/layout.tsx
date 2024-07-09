@@ -5,6 +5,7 @@ import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/sonner'
+import GlobalConfig from '@/app/app.config.js'
 
 const defaultTabName = process.env.NEXT_PUBLIC_CLIENT_BRANDING_NAME
 
@@ -36,7 +37,7 @@ const vazirmatn = Vazirmatn({ subsets: ['latin', 'arabic'] })
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="fa" suppressHydrationWarning>
+    <html lang={GlobalConfig.LANG} suppressHydrationWarning>
       <body className={vazirmatn.className}>
         <Toaster position="top-center" />
         <Providers

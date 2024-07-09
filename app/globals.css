@@ -4,6 +4,10 @@
 
 @layer base {
   :root {
+    --text-direction: rtl;
+    --list-padding-left: 0;
+    --list-padding-right: 1.625em;
+
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 
@@ -76,11 +80,11 @@
 }
 
 ol {
-  direction: rtl;
-  padding-left: 0;
-  padding-right: 1.625em;
+  direction: var(--text-direction);
+  padding-left: var(--list-padding-left);
+  padding-right: var(--list-padding-right);
 }
 
 ::marker {
-  direction: rtl;
+  direction: var(--text-direction);
 }
