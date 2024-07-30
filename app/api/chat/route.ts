@@ -3,7 +3,7 @@
 import 'server-only'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 // import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { createClientSchema } from '@/utils/supabase/server' 
+import { createClientSchema } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 import { Database } from '@/lib/db_types'
 
@@ -25,7 +25,6 @@ export async function POST(req: Request) {
     })
   }
 
-
   if (previewToken) {
     configuration.apiKey = previewToken
   }
@@ -41,7 +40,7 @@ export async function POST(req: Request) {
     chat_id: json.id,
     user_id: json.user_id
   }
-  const res = await fetch(url, {
+  var res = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -49,38 +48,77 @@ export async function POST(req: Request) {
     },
     body: JSON.stringify(payload)
   })
+  res = await res.text()
+  console.log(`Request object is ${res}`)
+  // res = res['data']['response']
 
-  const stream = OpenAIStream(res, {
-    async onCompletion(completion) {
-      const title = json.messages[0].content.substring(0, 100)
-      const id = json.id ?? generateUUID()
-      const createdAt = Date.now()
-      const path = `/chat/${id}`
-      const payload = {
-        id,
-        title,
-        userId,
-        createdAt,
-        path,
-        messages: [
-          ...messages,
-          {
-            content: completion,
-            role: 'assistant'
-          }
-        ]
-      }
-      // Insert chat into database.
-      const { data: record, error: record_error } = await supabase.from('chats').select('*').eq('chat_id', json.id).maybeSingle().throwOnError()
+  // console.log(`Request object is ${res}`)
 
-      if (record?.id){
-        await supabase.from('chats').update({'payload': payload }).eq('chat_id', json.id)
+  const title = json.messages[0].content.substring(0, 100)
+  const id = json.id ?? generateUUID()
+  const createdAt = Date.now()
+  const path = `/chat/${id}`
+  const payload_res = {
+    id,
+    title,
+    userId,
+    createdAt,
+    path,
+    messages: [
+      ...messages,
+      {
+        content: res,
+        role: 'assistant'
       }
-      else{
-        await supabase.from('chats').insert({ 'chat_id': id, 'user_id': userId, 'payload': payload })
+    ]
+  }
+  // Insert chat into database.
+  const { data: record, error: record_error } = await supabase
+    .from('chats')
+    .select('*')
+    .eq('chat_id', json.id)
+    .maybeSingle()
+    .throwOnError()
+
+  if (record?.id) {
+    await supabase
+      .from('chats')
+      .update({ payload: payload_res })
+      .eq('chat_id', json.id)
+  } else {
+    console.log(
+      `payload is ${payload_res.messages[0]['content']}. and userId is ${userId} and chatId is ${id}.`
+    )
+    try {
+      final_res = await supabase
+        .from('chats')
+        .insert({ chat_id: id, user_id: userId, payload: payload_res })
+      console.log(`Final Response: ${final_res}`)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error occurred: ${error.message}`)
+      } else {
+        console.error('Unknown error occurred')
       }
     }
+  }
+
+  // Create a readable stream from the text message
+  const stream = new ReadableStream({
+    start(controller) {
+      // Convert the text message to a Uint8Array and enqueue it
+      const encoder = new TextEncoder()
+      const chunk = encoder.encode(res)
+
+      // Enqueue the chunk
+      controller.enqueue(chunk)
+
+      // Close the stream
+      controller.close()
+    }
   })
+
+  // const openAIStream = OpenAIStream(stream)
 
   return new StreamingTextResponse(stream)
 }
