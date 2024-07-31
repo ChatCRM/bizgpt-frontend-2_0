@@ -1,30 +1,49 @@
-// @ts-nocheck 
+// @ts-nocheck
 import { Message } from 'ai'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
+
+import ReactMarkdown from 'react-markdown'
 
 import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/codeblock'
 import { MemoizedReactMarkdown } from '@/components/markdown'
 import { IconOpenAI, IconUser } from '@/components/ui/icons'
-import SmartToySharpIcon from '@mui/icons-material/SmartToySharp';
-import { ChatMessageActionsBookmark, ChatMessageActionsFeedback } from '@/components/original-chat/chat-message-actions'
+import SmartToySharpIcon from '@mui/icons-material/SmartToySharp'
+import {
+  ChatMessageActionsBookmark,
+  ChatMessageActionsFeedback
+} from '@/components/original-chat/chat-message-actions'
+
+const isMarkdown = content => {
+  const markdownRegex = /(^#\s|^\*\s|^\d+\.\s|[*_`~])/m
+  return markdownRegex.test(content)
+}
 
 export interface ChatMessageProps {
-  message: Message,
-  index: Number,
-  username: String | undefined,
-  bookmarks: JSON | undefined,
-  feedbacks: JSON | undefined,
+  message: Message
+  index: Number
+  username: String | undefined
+  bookmarks: JSON | undefined
+  feedbacks: JSON | undefined
   bookmark_page: Boolean
   chat_id: String | undefined
   user_id: String | undefined
 }
 
-export function ChatMessage({ chat_id, message, index, user_id, username, bookmarks, feedbacks, bookmark_page, ...props }: ChatMessageProps) {
-
+export function ChatMessage({
+  chat_id,
+  message,
+  index,
+  user_id,
+  username,
+  bookmarks,
+  feedbacks,
+  bookmark_page,
+  ...props
+}: ChatMessageProps) {
   const NEXT_PUBLIC_TEXT_DIRECTION = process.env.NEXT_PUBLIC_TEXT_DIRECTION
-  
+
   return (
     <div
       className={cn('group relative mb-4 flex items-start md:-ml-12')}
@@ -46,7 +65,25 @@ export function ChatMessage({ chat_id, message, index, user_id, username, bookma
           remarkPlugins={[remarkGfm, remarkMath]}
           components={{
             p({ children }) {
-              return <p className="mb-2 last:mb-0" dir={NEXT_PUBLIC_TEXT_DIRECTION == 'RTL' ? "rtl" : "ltr" } >{children}</p>
+              const content =
+                typeof children == 'string'
+                  ? children
+                      .trim()
+                      .replace(/\\n/g, '\n')
+                      .replace(/\n/g, ' <br />')
+                  : ''
+              return (
+                <p
+                  className="mb-2 last:mb-0"
+                  dir={NEXT_PUBLIC_TEXT_DIRECTION == 'RTL' ? 'rtl' : 'ltr'}
+                >
+                  {isMarkdown(content) ? (
+                    <ReactMarkdown>{content}</ReactMarkdown>
+                  ) : (
+                    content
+                  )}
+                </p>
+              )
             },
             code({ node, inline, className, children, ...props }) {
               if (children.length) {
@@ -82,8 +119,28 @@ export function ChatMessage({ chat_id, message, index, user_id, username, bookma
         >
           {message.content}
         </MemoizedReactMarkdown>
-        {bookmark_page ? undefined : <ChatMessageActionsBookmark chat_id={chat_id} user_id={user_id} message={message} index={index} username={username} className={"bookmark-cls"} bookmarks={bookmarks}/>}
-        {bookmark_page ? undefined : <ChatMessageActionsFeedback chat_id={chat_id} user_id={user_id} message={message} index={index} username={username} className={"feedback-cls"} feedbacks={feedbacks} />}
+        {bookmark_page ? undefined : (
+          <ChatMessageActionsBookmark
+            chat_id={chat_id}
+            user_id={user_id}
+            message={message}
+            index={index}
+            username={username}
+            className={'bookmark-cls'}
+            bookmarks={bookmarks}
+          />
+        )}
+        {bookmark_page ? undefined : (
+          <ChatMessageActionsFeedback
+            chat_id={chat_id}
+            user_id={user_id}
+            message={message}
+            index={index}
+            username={username}
+            className={'feedback-cls'}
+            feedbacks={feedbacks}
+          />
+        )}
       </div>
     </div>
   )
