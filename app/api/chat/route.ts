@@ -1,14 +1,19 @@
 // @ts-nocheck
 
 import 'server-only'
+
+import { assistantId } from '@/app/assistant-config'
+import { openai } from '@/app/openai'
+
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 // import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { createClientSchema } from '@/utils/supabase/server' 
+import { createClientSchema } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 import { Database } from '@/lib/db_types'
 
 import { auth, authUser } from '@/auth'
 import { nanoid, generateUUID } from '@/lib/utils'
+import { threadId } from 'worker_threads'
 
 export const maxDuration = 120
 export const runtime = 'nodejs'
@@ -25,7 +30,6 @@ export async function POST(req: Request) {
     })
   }
 
-
   if (previewToken) {
     configuration.apiKey = previewToken
   }
@@ -34,24 +38,38 @@ export async function POST(req: Request) {
   const userName = json.username
   const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_MESSAGES_SUBMIT_PATH}`
   const index = Math.round(json.messages.length / 2)
+  console.log('messages are:' + JSON.stringify(messages))
+  const question_text = messages.at(-1).content
   const payload = {
     username: userName,
     streamlit_element_key_id: String(index),
-    question_text: json.messages.at(-1).content,
+    question_text: question_text,
     chat_id: json.id,
     user_id: json.user_id
   }
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.BizGPT_CLIENT_API_TOKEN_FRONTEND}`
-    },
-    body: JSON.stringify(payload)
-  })
+  // const threadId = json.threadId
+  // console.log(`ThreadId Is: ${threadId}`)
+  console.log(`AssitatntId Is: ${assistantId}`)
 
-  const stream = OpenAIStream(res, {
-    async onCompletion(completion) {
+  // const content = question_text
+  console.log('content is: ' + question_text)
+  // await openai.beta.threads.messages.create(threadId, {
+  //   role: 'user',
+  //   content: question_text
+  // })
+  const stream = await openai.beta.threads.createAndRun({
+    assistant_id: assistantId,
+    thread: {
+      messages: messages
+    },
+    stream: true
+  })
+  let final_answer = ''
+  for await (const event of stream) {
+    console.log(event)
+    if (event.event == 'thread.message.completed') {
+      final_answer = event.data.content[0].text.value
+      console.log('final answer is:' + final_answer)
       const title = json.messages[0].content.substring(0, 100)
       const id = json.id ?? generateUUID()
       const createdAt = Date.now()
@@ -65,22 +83,56 @@ export async function POST(req: Request) {
         messages: [
           ...messages,
           {
-            content: completion,
+            content: final_answer,
             role: 'assistant'
           }
         ]
       }
       // Insert chat into database.
-      const { data: record, error: record_error } = await supabase.from('chats').select('*').eq('chat_id', json.id).maybeSingle().throwOnError()
+      const { data: record, error: record_error } = await supabase
+        .from('chats')
+        .select('*')
+        .eq('chat_id', json.id)
+        .maybeSingle()
+        .throwOnError()
 
-      if (record?.id){
-        await supabase.from('chats').update({'payload': payload }).eq('chat_id', json.id)
+      if (record?.id) {
+        await supabase
+          .from('chats')
+          .update({ payload: payload })
+          .eq('chat_id', json.id)
+      } else {
+        await supabase
+          .from('chats')
+          .insert({ chat_id: id, user_id: userId, payload: payload })
       }
-      else{
-        await supabase.from('chats').insert({ 'chat_id': id, 'user_id': userId, 'payload': payload })
-      }
+    }
+  }
+  // Create a readable stream from the text message
+  const stream_readable = new ReadableStream({
+    start(controller) {
+      // Convert the text message to a Uint8Array and enqueue it
+      const encoder = new TextEncoder()
+      const chunk = encoder.encode(final_answer)
+
+      // Enqueue the chunk
+      controller.enqueue(chunk)
+
+      // Close the stream
+      controller.close()
     }
   })
 
-  return new StreamingTextResponse(stream)
+  return new StreamingTextResponse(stream_readable)
+
+  // const stream_res = openai.beta.threads.runs
+  //   .stream(threadId, {
+  //     assistant_id: assistantId
+  //   })
+  //   .on('textDone', async (content: Text, snapshot: Message) => {
+  //     console.log(`content: ${JSON.stringify(content, null, 4)}`)
+  //     console.log(`Completion is: ${content.value}`)
+
+  // return new Response(stream_res.toReadableStream())
+  // return new StreamingTextResponse(stream_res)
 }

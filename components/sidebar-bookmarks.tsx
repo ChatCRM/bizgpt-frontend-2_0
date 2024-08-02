@@ -1,4 +1,3 @@
-
 import * as React from 'react'
 
 import Link from 'next/link'
@@ -8,14 +7,12 @@ import { SidebarList } from '@/components/sidebar-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/ui/icons'
 import GlobalConfig from '@/app/app.config.js'
-import { GetTranslation } from "@/components/translation-helper/ClientTranslations"
-
-
+import { GetTranslation } from '@/components/translation-helper/ClientTranslations'
 
 export async function SideBarBookmarks() {
-    return (
-        <>
-            <h4 className="mb-2 px-4 text-sm font-medium">
+  return (
+    <>
+      {/* <h4 className="mb-2 px-4 text-sm font-medium">
                 <GetTranslation text="Bookmarks" />
             </h4>
             <div className="mb-2 px-6">
@@ -28,7 +25,7 @@ export async function SideBarBookmarks() {
                 >
                     <GetTranslation text="Bookmarks" />
                 </Link>
-            </div>
-        </>
-    )
+            </div> */}
+    </>
+  )
 }

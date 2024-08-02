@@ -1,33 +1,36 @@
-// @ts-nocheck 
+// @ts-nocheck
 'use client'
 
 import { type Message } from 'ai'
 
-import { Button } from '@/components/ui/button';
-import ButtonMaterial from '@mui/material/Button';
+import { Button } from '@/components/ui/button'
+import ButtonMaterial from '@mui/material/Button'
 import { IconCheck, IconCopy } from '@/components/ui/icons'
 import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard'
 import { cn } from '@/lib/utils'
 
-import { useState, useEffect } from "react";
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import { useState, useEffect } from 'react'
+import BookmarkIcon from '@mui/icons-material/Bookmark'
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import axios from 'axios'
 
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
-import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
-import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
-import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
-import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied'
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied'
+import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral'
+import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied'
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt'
 
-import Stack from '@mui/material/Stack';
-import { Box } from "@mui/material";
-import { styled } from '@mui/material/styles';
-import TextField from "@mui/material/TextField";
-import SendIcon from '@mui/icons-material/Send';
+import Stack from '@mui/material/Stack'
+import { Box } from '@mui/material'
+import { styled } from '@mui/material/styles'
+import TextField from '@mui/material/TextField'
+import SendIcon from '@mui/icons-material/Send'
 
-import { StyledEngineProvider } from '@mui/material/styles';
-import { submitFeedback, submitBookmark } from '@/components/original-chat/actions'
+import { StyledEngineProvider } from '@mui/material/styles'
+import {
+  submitFeedback,
+  submitBookmark
+} from '@/components/original-chat/actions'
 import GlobalConfig from '@/app/app.config.js'
 
 const StyledTextField = styled(TextField)(
@@ -42,68 +45,66 @@ const StyledTextField = styled(TextField)(
       border: 1px solid ${color};
       background: transparent;
       `
-);
+)
 
 const colors = {
-  grey: "#000000",
-  "😀": "#4caf50",
-  "🙂": "#6fbf73",
-  "😐": "#ff9800",
-  "🙁": "#f6685e",
-  "😞": "#f44336"
+  grey: '#000000',
+  '😀': '#4caf50',
+  '🙂': '#6fbf73',
+  '😐': '#ff9800',
+  '🙁': '#f6685e',
+  '😞': '#f44336'
 }
 
 const TextFieldcolors = {
-  "😀": "success",
-  "🙂": "success",
-  "😐": "warning",
-  "🙁": "error",
-  "😞": "error"
+  '😀': 'success',
+  '🙂': 'success',
+  '😐': 'warning',
+  '🙁': 'error',
+  '😞': 'error'
 }
 
 const FaceToScoreMapping = {
-  "😀": 100,
-  "🙂": 80,
-  "😐": 60,
-  "🙁": 40,
-  "😞": 20
+  '😀': 100,
+  '🙂': 80,
+  '😐': 60,
+  '🙁': 40,
+  '😞': 20
 }
 
 const FaceToScoreMappingReverse = {
-  100: "😀",
-  80: "🙂",
-  60: "😐",
-  40: "🙁",
-  20: "😞"
+  100: '😀',
+  80: '🙂',
+  60: '😐',
+  40: '🙁',
+  20: '😞'
 }
 
 function index_fixer(number: Number): Number {
   if (number <= 1) {
     return 1
-  }
-  else {
+  } else {
     return Math.round(number / 2)
   }
 }
 
 interface ChatMessageActionsBookmarkProps extends React.ComponentProps<'div'> {
-  message: Message,
-  index: number,
-  username: String | undefined,
+  message: Message
+  index: number
+  username: String | undefined
   bookmakrs: JSON | undefined
   chat_id: String | undefined
   user_id: String | undefined
 }
 
 interface ChatMessageActionsFeedbackProps extends React.ComponentProps<'div'> {
-  message: Message,
-  index: number,
-  username: String | undefined,
+  message: Message
+  index: number
+  username: String | undefined
   feedbacks: JSON | undefined
   chat_id: String | undefined
   user_id: String | undefined
 }
-
 
 export function ChatMessageActionsBookmark({
   chat_id,
@@ -115,13 +116,14 @@ export function ChatMessageActionsBookmark({
   className,
   ...props
 }: ChatMessageActionsBookmarkProps) {
-  const [isBookmarked, setBookmark] = useState(false);
+  const [isBookmarked, setBookmark] = useState(false)
 
-  const bookmark_state = bookmarks?.bookmarks[`bookmark_${index_fixer(index)}`]?.bookmark
+  const bookmark_state =
+    bookmarks?.bookmarks[`bookmark_${index_fixer(index)}`]?.bookmark
   useEffect(() => {
     if (index % 2 != 0) {
       if (bookmark_state) {
-        setBookmark(bookmark_state);
+        setBookmark(bookmark_state)
       }
     }
   }, [bookmark_state, index])
@@ -131,8 +133,12 @@ export function ChatMessageActionsBookmark({
       setBookmark(false)
 
       const bookmark_key = `bookmark_${index_fixer(index)}`
-      let payload = { data: { ...bookmarks?.bookmarks }, mode: process.env.PERSISTENCE_MODE, state_diff: {} }
-      payload['data'][bookmark_key] = { "bookmark": false }
+      let payload = {
+        data: { ...bookmarks?.bookmarks },
+        mode: process.env.PERSISTENCE_MODE,
+        state_diff: {}
+      }
+      payload['data'][bookmark_key] = { bookmark: false }
       payload['chat_id'] = chat_id
       payload['user_id'] = user_id
       payload['username'] = username
@@ -142,30 +148,30 @@ export function ChatMessageActionsBookmark({
         method: 'POST',
         headers: {},
         body: JSON.stringify(payload)
-      }
-      )
+      })
       submitBookmark(payload)
-    }
-    else if (isBookmarked == false) {
+    } else if (isBookmarked == false) {
       setBookmark(true)
       const bookmark_key = `bookmark_${index_fixer(index)}`
-      let payload = { data: { ...bookmarks?.bookmarks }, mode: process.env.PERSISTENCE_MODE, state_diff: {} }
+      let payload = {
+        data: { ...bookmarks?.bookmarks },
+        mode: process.env.PERSISTENCE_MODE,
+        state_diff: {}
+      }
       payload['chat_id'] = chat_id
       payload['user_id'] = user_id
       payload['username'] = username
-      payload['data'][bookmark_key] = { "bookmark": true }
+      payload['data'][bookmark_key] = { bookmark: true }
       payload['state_diff']['bookmark_state'] = true
       payload['state_diff']['index'] = index_fixer(index)
       await fetch('/api/bookmarks', {
         method: 'POST',
         headers: {},
         body: JSON.stringify(payload)
-      }
-      )
+      })
       submitBookmark(payload)
     }
   }
-
 
   if (index % 2 != 0) {
     return (
@@ -179,13 +185,10 @@ export function ChatMessageActionsBookmark({
         <Button variant="ghost" size="icon" onClick={Bookmark}>
           {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
         </Button>
-
       </div>
     )
   }
 }
-
-
 
 export function ChatMessageActionsFeedback({
   chat_id,
@@ -197,23 +200,23 @@ export function ChatMessageActionsFeedback({
   className,
   ...props
 }: ChatMessageActionsFeedbackProps) {
-  const [submitted, setSubmitted] = useState(false);
-  const [inputText, setInputText] = useState(null);
-  const [faceScore, setFaceScore] = useState(null);
+  const [submitted, setSubmitted] = useState(false)
+  const [inputText, setInputText] = useState(null)
+  const [faceScore, setFaceScore] = useState(null)
   const TextDirection = process.env.NEXT_PUBLIC_TEXT_DIRECTION
-  const feedback_state = feedbacks?.feedbacks[`feedback_${index_fixer(index)}`]?.score
+  const feedback_state =
+    feedbacks?.feedbacks[`feedback_${index_fixer(index)}`]?.score
   // Language and Translation
-  var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`);
+  var TranslationData = require(`@/translation/${GlobalConfig.LANG}.json`)
 
   useEffect(() => {
     if (index % 2 != 0) {
       if (feedback_state) {
-        setSubmitted(true);
-        if (typeof feedback_state == "number"){
-          setFaceScore(FaceToScoreMappingReverse[feedback_state]);
-        }
-        else{
-          setFaceScore(feedback_state);
+        setSubmitted(true)
+        if (typeof feedback_state == 'number') {
+          setFaceScore(FaceToScoreMappingReverse[feedback_state])
+        } else {
+          setFaceScore(feedback_state)
         }
       }
     }
@@ -221,11 +224,11 @@ export function ChatMessageActionsFeedback({
 
   const handleFaceClick = (score: String) => {
     if (score === faceScore) {
-      setFaceScore(null);
+      setFaceScore(null)
     } else {
-      setFaceScore(score);
+      setFaceScore(score)
     }
-  };
+  }
 
   const selectColor = (score: string) => {
     if (faceScore) {
@@ -233,13 +236,13 @@ export function ChatMessageActionsFeedback({
         return colors[score]
       } else {
         if (submitted) {
-          return "transparent"
+          return 'transparent'
         } else {
-          return colors["grey"]
+          return colors['grey']
         }
       }
     } else {
-      return colors["grey"]
+      return colors['grey']
     }
   }
 
@@ -249,7 +252,7 @@ export function ChatMessageActionsFeedback({
         return colors[score]
       } else {
         if (submitted) {
-          return "transparent"
+          return 'transparent'
         } else {
           return colors[score]
         }
@@ -259,20 +262,32 @@ export function ChatMessageActionsFeedback({
     }
   }
 
-  const handleTextInput = (text) => {
-    setInputText(text.currentTarget.value);
-  };
+  const handleTextInput = text => {
+    setInputText(text.currentTarget.value)
+  }
 
   const handleSubmission = () => {
-    setSubmitted(true);
+    setSubmitted(true)
 
     const feedback_key = `feedback_${index_fixer(index)}`
-    let payload = { data: { ...feedbacks?.feedbacks }, mode: process.env.PERSISTENCE_MODE, state_diff: {} }
-    payload[feedback_key] = { "type": "faces", "score": FaceToScoreMapping[faceScore], "text": inputText }
+    let payload = {
+      data: { ...feedbacks?.feedbacks },
+      mode: process.env.PERSISTENCE_MODE,
+      state_diff: {}
+    }
+    payload[feedback_key] = {
+      type: 'faces',
+      score: FaceToScoreMapping[faceScore],
+      text: inputText
+    }
     payload['chat_id'] = chat_id
     payload['user_id'] = user_id
     payload['username'] = username
-    payload['data'][feedback_key] = { "type": "faces", "score": FaceToScoreMapping[faceScore], "text": inputText }
+    payload['data'][feedback_key] = {
+      type: 'faces',
+      score: FaceToScoreMapping[faceScore],
+      text: inputText
+    }
     payload['state_diff']['score'] = FaceToScoreMapping[faceScore]
     payload['state_diff']['text'] = inputText
     payload['state_diff']['index'] = index_fixer(index)
@@ -281,59 +296,72 @@ export function ChatMessageActionsFeedback({
       method: 'POST',
       headers: {},
       body: JSON.stringify(payload)
-    }
-    )
+    })
     submitFeedback(payload)
-  };
+  }
   if (index % 2 != 0) {
     return (
-      <Box className="remove-all" paddingY={0.5} height={140} component="form" sx={{ "& .MuiTextField-root": { m: 1, width: "50ch" } }} noValidate autoComplete="off">
-        <Stack className="feedback-cls" direction="row" spacing={0} justifyContent={'right'} alignItems={'right'}>
-          <SentimentVeryDissatisfiedIcon
+      <Box
+        className="remove-all"
+        paddingY={0.5}
+        height={140}
+        component="form"
+        sx={{ '& .MuiTextField-root': { m: 1, width: '50ch' } }}
+        noValidate
+        autoComplete="off"
+      >
+        {/* <Stack
+          className="feedback-cls"
+          direction="row"
+          spacing={0}
+          justifyContent={'right'}
+          alignItems={'right'}
+        > */}
+        {/* <SentimentVeryDissatisfiedIcon
             sx={{
               fontSize: 24,
-              color: selectColor("😞"),
+              color: selectColor('😞'),
               '&:hover': {
-                cursor: submitted ? null : "pointer",
-                color: selectHoverColor("😞"),
-              },
+                cursor: submitted ? null : 'pointer',
+                color: selectHoverColor('😞')
+              }
             }}
-            onClick={() => submitted ? {} : handleFaceClick("😞")}
+            onClick={() => (submitted ? {} : handleFaceClick('😞'))}
           />
           <SentimentDissatisfiedIcon
             sx={{
               fontSize: 24,
-              color: selectColor("🙁"),
+              color: selectColor('🙁'),
               '&:hover': {
-                cursor: submitted ? null : "pointer",
-                color: selectHoverColor("🙁"),
-              },
+                cursor: submitted ? null : 'pointer',
+                color: selectHoverColor('🙁')
+              }
             }}
-            onClick={() => submitted ? {} : handleFaceClick("🙁")}
+            onClick={() => (submitted ? {} : handleFaceClick('🙁'))}
           />
           <SentimentNeutralIcon
             sx={{
               fontSize: 24,
-              color: selectColor("😐"),
+              color: selectColor('😐'),
               '&:hover': {
-                cursor: submitted ? null : "pointer",
-                color: selectHoverColor("😐"),
-              },
+                cursor: submitted ? null : 'pointer',
+                color: selectHoverColor('😐')
+              }
             }}
-            onClick={() => submitted ? {} : handleFaceClick("😐")}
+            onClick={() => (submitted ? {} : handleFaceClick('😐'))}
           />
           <SentimentSatisfiedIcon
             sx={{
               fontSize: 24,
-              color: selectColor("🙂"),
+              color: selectColor('🙂'),
               '&:hover': {
-                cursor: submitted ? null : "pointer",
-                color: selectHoverColor("🙂"),
-              },
+                cursor: submitted ? null : 'pointer',
+                color: selectHoverColor('🙂')
+              }
             }}
-            onClick={() => submitted ? {} : handleFaceClick("🙂")}
-          />
-          <SentimentSatisfiedAltIcon
+            onClick={() => (submitted ? {} : handleFaceClick('🙂'))}
+          /> */}
+        {/* <SentimentSatisfiedAltIcon
             sx={{
               fontSize: 24,
               color: selectColor("😀"),
@@ -343,10 +371,20 @@ export function ChatMessageActionsFeedback({
               },
             }}
             onClick={() => submitted ? {} : handleFaceClick("😀")}
-          />
-          {submitted === false && faceScore !== null ? <StyledTextField id="outlined-multiline-static" inputProps={{ maxLength: "1000" }} onChange={handleTextInput} multiline rows={4} dir={TextDirection} placeholder={TranslationData["Please describe..."]} aria-label="Demo input" color={TextFieldcolors[faceScore]} /> : null}
-          {submitted === false && faceScore !== null ? <ButtonMaterial sx={{ color: colors[faceScore] }} endIcon={<SendIcon />} variant="text" size="small" onClick={handleSubmission}>{TranslationData["Submit"]}</ButtonMaterial> : null}
-        </Stack>
+          /> */}
+        {/* {submitted === false && faceScore !== null ? <StyledTextField id="outlined-multiline-static" inputProps={{ maxLength: "1000" }} onChange={handleTextInput} multiline rows={4} dir={TextDirection} placeholder={TranslationData["Please describe..."]} aria-label="Demo input" color={TextFieldcolors[faceScore]} /> : null} */}
+        {/* {submitted === false && faceScore !== null ? (
+            <ButtonMaterial
+              sx={{ color: colors[faceScore] }}
+              endIcon={<SendIcon />}
+              variant="text"
+              size="small"
+              onClick={handleSubmission}
+            >
+              {TranslationData['Submit']}
+            </ButtonMaterial>
+          ) : null} */}
+        {/* </Stack> */}
       </Box>
     )
   }

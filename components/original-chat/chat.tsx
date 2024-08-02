@@ -27,16 +27,25 @@ import { useRouter } from 'next/navigation'
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
-  id?: string,
-  username?: String | undefined,
-  bookmarks?: JSON | undefined,
-  feedbacks?: JSON | undefined,
+  id?: string
+  username?: String | undefined
+  bookmarks?: JSON | undefined
+  feedbacks?: JSON | undefined
   bookmark_page: Boolean
   chat_id: Number
   user_id: String | undefined
 }
 
-export function Chat({ id, initialMessages, user_id, username, bookmarks, feedbacks, bookmark_page, className }: ChatProps) {
+export function Chat({
+  id,
+  initialMessages,
+  user_id,
+  username,
+  bookmarks,
+  feedbacks,
+  bookmark_page,
+  className
+}: ChatProps) {
   const [previewToken, setPreviewToken] = useLocalStorage<string | null>(
     'ai-token',
     null
@@ -47,6 +56,9 @@ export function Chat({ id, initialMessages, user_id, username, bookmarks, feedba
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
   const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
     useScrollAnchor()
+
+  // const [threadId, setThreadId] = useState('')
+
   const { messages, append, reload, stop, isLoading, input, setInput } =
     useChat({
       initialMessages,
@@ -56,6 +68,7 @@ export function Chat({ id, initialMessages, user_id, username, bookmarks, feedba
         previewToken,
         user_id,
         username
+        // threadId
       },
       onResponse(response) {
         if (response.status === 401) {
@@ -87,20 +100,43 @@ export function Chat({ id, initialMessages, user_id, username, bookmarks, feedba
   // }
   //   , [firstLoad])
 
+  // create a new threadID when chat component created
+  // useEffect(() => {
+  //   const createThread = async () => {
+  //     const res = await fetch(`/api/assistants/threads`, {
+  //       method: 'POST'
+  //     })
+  //     const data = await res.json()
+  //     setThreadId(data.threadId)
+  //     // console.log(`ThreadId is ${data.threadId}`)
+  //   }
+  //   createThread()
+  // }, [])
+
   useEffect(() => {
     setNewChatId(id)
   })
   return (
     <>
-      <div className='group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[250px]'
-        ref={scrollRef}>
+      <div
+        className="group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[250px]"
+        ref={scrollRef}
+      >
         <div
           className={cn('pb-[200px] pt-4 md:pt-10', className)}
           ref={messagesRef}
         >
           {messages.length ? (
             <>
-              <ChatList chat_id={id} messages={messages} username={username} user_id={user_id} bookmarks={bookmarks} feedbacks={feedbacks} bookmark_page={bookmark_page} />
+              <ChatList
+                chat_id={id}
+                messages={messages}
+                username={username}
+                user_id={user_id}
+                bookmarks={bookmarks}
+                feedbacks={feedbacks}
+                bookmark_page={bookmark_page}
+              />
               <ChatScrollAnchor trackVisibility={isLoading} />
             </>
           ) : (
@@ -119,6 +155,7 @@ export function Chat({ id, initialMessages, user_id, username, bookmarks, feedba
           setInput={setInput}
           isAtBottom={isAtBottom}
           scrollToBottom={scrollToBottom}
+          // threadId={threadId}
         />
       </div>
     </>
