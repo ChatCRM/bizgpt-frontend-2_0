@@ -52,18 +52,33 @@ export async function POST(req: Request) {
   console.log(`AssitatntId Is: ${assistantId}`)
 
   // const content = question_text
-  console.log('content is: ' + question_text)
+  // console.log('content is: ' + question_text)
   // await openai.beta.threads.messages.create(threadId, {
   //   role: 'user',
   //   content: question_text
   // })
+  const instructions = `
+    You are an expert in Blue Yonder, a leading warehouse management system.
+    Your role is to provide clear, accurate asnwers,
+    You must only answer with the data that is provided to you. 
+    Provide concise and direct answers, focusing on the user's specific question or issue. 
+    Pay attenstion: You must never cite the source of your response. You must never include corner brackets in your response and 
+    at the end of your answer, give user information about the name of the files you used to provide the ansers in the following format:
+    'The following documents were referenced to generate the response: \n {filname} -> line numbers: {line number} \n'.
+  `
   const stream = await openai.beta.threads.createAndRun({
     assistant_id: assistantId,
+    instructions: instructions,
+    temperature: 0,
     thread: {
       messages: messages
     },
-    stream: true
+    stream: true,
+    tool_resources: {
+      file_search: { vector_store_ids: ['vs_jMpHCf8c4MzyBguFBu5y2fdq'] }
+    }
   })
+  const pattern = /【\d+:\d+†source】/g
   let final_answer = ''
   for await (const event of stream) {
     console.log(event)
@@ -83,7 +98,7 @@ export async function POST(req: Request) {
         messages: [
           ...messages,
           {
-            content: final_answer,
+            content: final_answer.replace(pattern, ''),
             role: 'assistant'
           }
         ]
@@ -108,6 +123,8 @@ export async function POST(req: Request) {
       }
     }
   }
+
+  final_answer = final_answer.replace(pattern, '')
   // Create a readable stream from the text message
   const stream_readable = new ReadableStream({
     start(controller) {
