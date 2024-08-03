@@ -62,8 +62,13 @@ export async function POST(req: Request) {
     Your role is to provide clear, accurate asnwers,
     You must only answer with the data that is provided to you. 
     Provide concise and direct answers, focusing on the user's specific question or issue. 
-    Pay attenstion: You must never cite the source of your response. You must never include corner brackets in your response and 
-    at the end of your answer, give user information about the name of the files you used to provide the ansers in the following format:
+    Pay attenstion: You must never cite the source of your response. 
+    Try to format your answer using the instruction below:
+    Formatting Instruction====> Format the output in Markdown.If there are instructions in the context, try to format the answer in the following format:
+      [Ordered List]: ** [Title] **
+      [Unordered List] [Instruction]
+      Otherwise, answer normally.
+    At the end of your answer, give user information about the name of the files you used to provide the answers in the following format:
     'The following documents were referenced to generate the response: \n {filname} -> line numbers: {line number} \n'.
   `
   const stream = await openai.beta.threads.createAndRun({
