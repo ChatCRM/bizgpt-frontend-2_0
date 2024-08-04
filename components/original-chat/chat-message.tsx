@@ -65,22 +65,16 @@ export function ChatMessage({
           remarkPlugins={[remarkGfm, remarkMath]}
           components={{
             p({ children }) {
-              const content =
-                typeof children == 'string'
-                  ? children
-                      .trim()
-                      .replace(/\\n/g, '\n')
-                      .replace(/\n/g, ' <br />')
-                  : ''
               return (
                 <p
                   className="mb-2 last:mb-0"
                   dir={NEXT_PUBLIC_TEXT_DIRECTION == 'RTL' ? 'rtl' : 'ltr'}
                 >
-                  {isMarkdown(content) ? (
-                    <ReactMarkdown>{content}</ReactMarkdown>
+                  {/* {content} */}
+                  {isMarkdown(children) ? (
+                    <ReactMarkdown>{children}</ReactMarkdown>
                   ) : (
-                    content
+                    children
                   )}
                 </p>
               )
