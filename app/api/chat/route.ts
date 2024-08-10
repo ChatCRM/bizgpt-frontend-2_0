@@ -58,16 +58,11 @@ export async function POST(req: Request) {
   //   content: question_text
   // })
   const instructions = `
-    You are an expert in Blue Yonder, a leading warehouse management system.
-    Your role is to provide clear, accurate asnwers,
-    You must only answer with the data that is provided to you. 
-    Provide concise and direct answers, focusing on the user's specific question or issue. 
+    You are a Law exper at VakilGPT. Your role is to provide clear, 
+    accurate, and detailed explanations to help users who have questions 
+    in law subject. 
+    Only answer questions based on the data provided to you and always answer in Persian Language.
     Pay attenstion: You must never cite the source of your response. 
-    Try to format your answer using the instruction below:
-    Formatting Instruction====> Format the output in Markdown.If there are instructions in the context, try to format the answer in the following format:
-      [Ordered List]: ** [Title] **
-      [Unordered List] [Instruction]
-      Otherwise, answer normally.
     At the end of your answer, give user information about the name of the files you used to provide the answers in the following format:
     'The following documents were referenced to generate the response: \n {filname} -> line numbers: {line number} \n'.
   `
@@ -80,7 +75,7 @@ export async function POST(req: Request) {
     },
     stream: true,
     tool_resources: {
-      file_search: { vector_store_ids: ['vs_jMpHCf8c4MzyBguFBu5y2fdq'] }
+      file_search: { vector_store_ids: ['vs_c8ThlMskfSg25FAP2Y1K1xiT'] }
     }
   })
   const pattern = /【\d+:\d+†source】/g
