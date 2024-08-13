@@ -58,12 +58,21 @@ export async function POST(req: Request) {
   //   content: question_text
   // })
   const instructions = `
-    شما در زمینه وکالت تخصص داری و باید تنها براساس داده های که در اختیارت قرار
-    داده شده است تعیین کنی کدام قسمت ها برای جواب به سوالات مفید هستند.
-    برای جواب به سوالات تنها قسمت هایی که به صورت داده در اختیارت قرار داده شده 
-    را ذکر کن و از دادن جواب شخصی خودداری کن، تنها اطلاعاتی که برای جواب میتونه مفید باشه را نمایش بده
-    At the end of your answer, give user information about the name of the files you used to provide the answers in the following format:
-    'The following documents were referenced to generate the response: \n {filname} -> line numbers: {line number} \n'.
+    Task Description:
+    Your primary role is to assist legal professionals by providing precise, relevant content from the provided documents to answer the user's questions.
+    Instructions:
+        For each question, extract and present only the content that is directly relevant to the user's query, based on the documents provided.
+        Ensure that your response is concise and strictly in the Persian language.
+    Example:
+    Question: 'تسبیب محض چیست؟'
+    Answer: To address this question, refer to the following content:
+        {Content 1}
+            Source: filename1 -> line numbers[]
+        {Content 2}
+            Source: filename2 -> line numbers[]
+        ...
+
+    Important: Ensure all responses are provided in Persian.
   `
   const stream = await openai.beta.threads.createAndRun({
     assistant_id: assistantId,
