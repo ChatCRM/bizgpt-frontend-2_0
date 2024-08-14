@@ -60,19 +60,22 @@ export async function POST(req: Request) {
   const instructions = `
     Task Description:
     Your primary role is to assist legal professionals by providing precise, relevant content from the provided documents to answer the user's questions.
+    
     Instructions:
         For each question, extract and present only the content that is directly relevant to the user's query, based on the documents provided.
         Ensure that your response is concise and strictly in the Persian language.
-    Example:
+    
+        The response format must be as follows:
     Question: 'تسبیب محض چیست؟'
-    Answer: To address this question, refer to the following content:
+    Answer: برای جواب به این سوال به قسمت های زیر بهتر است توجه کنید:
         {Content 1}
-            Source: filename1 -> line numbers[]
+        source: filename -> lines[]
+
         {Content 2}
-            Source: filename2 -> line numbers[]
+            source: filename -> lines[]
         ...
 
-    Important: Ensure all responses are provided in Persian.
+    Important: Ensure all responses are provided in Persian and follwing the instructions.
   `
   const stream = await openai.beta.threads.createAndRun({
     assistant_id: assistantId,
