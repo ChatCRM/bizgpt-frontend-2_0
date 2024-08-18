@@ -88,7 +88,9 @@ export async function POST(req: Request) {
     stream: true,
     tool_resources: {
       file_search: { vector_store_ids: ['vs_c8ThlMskfSg25FAP2Y1K1xiT'] }
-    }
+    },
+    max_completion_tokens: 55000,
+    max_prompt_tokens: 55000
   })
   const pattern = /【\d+:\d+†source】/g
   let final_answer = ''
