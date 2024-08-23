@@ -64,21 +64,54 @@ export function ChatMessage({
           className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
           remarkPlugins={[remarkGfm, remarkMath]}
           components={{
+            table: ({ node, ...props }) => <table className="min-w-full border-collapse bg-white" {...props} />,
+            th: ({ node, ...props }) => <th className="border bg-gray-200 px-4 py-2 text-right" {...props} />,
+            td: ({ node, ...props }) => <td className="border px-4 py-2 text-right" {...props} />,
+            tr: ({ node, ...props }) => <tr className="even:bg-gray-100 hover:bg-gray-200" {...props} />,
             p({ children }) {
               return (
-                <p
-                  className="mb-2 last:mb-0"
-                  dir={NEXT_PUBLIC_TEXT_DIRECTION == 'RTL' ? 'rtl' : 'ltr'}
-                >
-                  {/* {content} */}
-                  {isMarkdown(children) ? (
-                    <ReactMarkdown>{children}</ReactMarkdown>
-                  ) : (
-                    children
-                  )}
-                </p>
-              )
-            },
+                  <p className="mb-2 last:mb-0" dir={NEXT_PUBLIC_TEXT_DIRECTION == "RTL" ? "rtl" : "ltr"}>
+                      {children}
+                  </p>
+              );
+          },
+          code({ node, inline, className, children, ...props }) {
+            if (children.length) {
+                if (children[0] == "▍") {
+                    return <span className="mt-1 animate-pulse cursor-default">▍</span>;
+                }
+
+                children[0] = (children[0] as string).replace("`▍`", "▍");
+            }
+
+            const match = /language-(\w+)/.exec(className || "");
+
+            if (inline) {
+                return (
+                    <code className={className} {...props}>
+                        {children}
+                    </code>
+                );
+            }
+
+            return <CodeBlock key={Math.random()} language={(match && match[1]) || ""} value={String(children).replace(/\n$/, "")} {...props} />;
+        },
+
+            // p({ children }) {
+            //   return (
+            //     <p
+            //       className="mb-2 last:mb-0"
+            //       dir={NEXT_PUBLIC_TEXT_DIRECTION == 'RTL' ? 'rtl' : 'ltr'}
+            //     >
+            //       {/* {content} */}
+            //       {isMarkdown(children) ? (
+            //         <ReactMarkdown>{children}</ReactMarkdown>
+            //       ) : (
+            //         children
+            //       )}
+            //     </p>
+            //   )
+            // },
             code({ node, inline, className, children, ...props }) {
               if (children.length) {
                 if (children[0] == '▍') {
