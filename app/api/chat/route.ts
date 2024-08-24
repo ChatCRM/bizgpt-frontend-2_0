@@ -31,8 +31,10 @@ export async function POST(req: Request) {
 
   const mode = process.env.PERSISTENCE_MODE
   const userName = json.username
-  const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_MESSAGES_SUBMIT_PATH}`
+  // const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_MESSAGES_SUBMIT_PATH}`
+  const url = `http://127.0.0.1:8000/${process.env.BizGT_CLIENT_API_MESSAGES_SUBMIT_PATH}`
   const index = Math.round(json.messages.length / 2)
+  console.log(`URL is: ${url}`)
   const payload = {
     username: userName,
     streamlit_element_key_id: String(index),
@@ -90,10 +92,9 @@ export async function POST(req: Request) {
       `payload is ${payload_res.messages[0]['content']}. and userId is ${userId} and chatId is ${id}.`
     )
     try {
-      final_res = await supabase
+      await supabase
         .from('chats')
         .insert({ chat_id: id, user_id: userId, payload: payload_res })
-      console.log(`Final Response: ${final_res}`)
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error occurred: ${error.message}`)
