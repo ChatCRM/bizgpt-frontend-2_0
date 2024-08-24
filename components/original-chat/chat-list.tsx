@@ -39,6 +39,7 @@ export function ChatList({
             feedbacks={feedbacks}
             bookmark_page={bookmark_page}
           />
+
           {index < messages.length - 1 && index % 2 != 0 && index >= 1 && (
             <Separator className="my-4 md:my-8" />
           )}

@@ -31,6 +31,8 @@ export interface ChatMessageProps {
   user_id: String | undefined
 }
 
+const decoder = new TextDecoder()
+
 export function ChatMessage({
   chat_id,
   message,
@@ -43,6 +45,7 @@ export function ChatMessage({
   ...props
 }: ChatMessageProps) {
   const NEXT_PUBLIC_TEXT_DIRECTION = process.env.NEXT_PUBLIC_TEXT_DIRECTION
+  const formattedContent = message.content.replace(/\\n/g, '\n')
 
   return (
     <div
@@ -170,7 +173,7 @@ export function ChatMessage({
             }
           }}
         >
-          {message.content}
+          {formattedContent}
         </MemoizedReactMarkdown>
         {bookmark_page ? undefined : (
           <ChatMessageActionsBookmark
