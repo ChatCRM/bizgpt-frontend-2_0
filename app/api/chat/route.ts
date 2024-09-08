@@ -51,6 +51,40 @@ export async function POST(req: Request) {
   // console.log(`ThreadId Is: ${threadId}`)
   console.log(`AssitatntId Is: ${assistantId}`)
 
+  // Check if chat_id exists in the database
+  let thread
+  let threadId
+
+  const { data, error } = await supabase
+    .from('chats')
+    .select('*')
+    .eq('chat_id', json.id)
+    .single()
+  console.log(`Data is: ${data}`)
+  if (error) {
+    console.error('Error checking chat_id:', error)
+    // Create a new thread if there's an error
+    thread = await openai.beta.threads.create()
+    threadId = thread.id
+    console.log(`ThreadId is: ${threadId}`)
+  } else {
+    const payloadDb = data?.payload // Use optional chaining to avoid errors if data is null
+    // console.log(`PayloadDB is ${JSON.stringify(payloadDb)}`)
+    if (payloadDb && payloadDb.threadId) {
+      // Use payloadDb.threadId directly if it exists
+
+      threadId = payloadDb.threadId
+      console.log(`ThreadId is: ${threadId}`)
+    } else {
+      // Create a new thread if threadId doesn't exist in payloadDb
+      thread = await openai.beta.threads.create({
+        messages: [...messages]
+      })
+      threadId = thread.id
+      console.log(`New ThreadId with prev messages is: ${threadId}`)
+    }
+  }
+
   // const content = question_text
   // console.log('content is: ' + question_text)
   // await openai.beta.threads.messages.create(threadId, {
@@ -71,13 +105,13 @@ export async function POST(req: Request) {
     At the end of your answer, give user information about the name of the files you used to provide the answers in the following format:
     'The following documents were referenced to generate the response: \n {filname} -> line numbers: {line number} \n'.
   `
-  const stream = await openai.beta.threads.createAndRun({
+  const stream = await openai.beta.threads.runs.create(threadId, {
     assistant_id: assistantId,
     instructions: instructions,
     temperature: 0,
-    thread: {
-      messages: messages
-    },
+    // thread: {
+    //   messages: messages
+    // },
     stream: true,
     tool_resources: {
       file_search: { vector_store_ids: ['vs_jMpHCf8c4MzyBguFBu5y2fdq'] }
@@ -86,10 +120,10 @@ export async function POST(req: Request) {
   const pattern = /【\d+:\d+†source】/g
   let final_answer = ''
   for await (const event of stream) {
-    console.log(event)
+    // console.log(event)
     if (event.event == 'thread.message.completed') {
       final_answer = event.data.content[0].text.value
-      console.log('final answer is:' + final_answer)
+      // console.log('final answer is:' + final_answer)
       const title = json.messages[0].content.substring(0, 100)
       const id = json.id ?? generateUUID()
       const createdAt = Date.now()
@@ -97,6 +131,7 @@ export async function POST(req: Request) {
       const payload = {
         id,
         title,
+        threadId,
         userId,
         createdAt,
         path,
