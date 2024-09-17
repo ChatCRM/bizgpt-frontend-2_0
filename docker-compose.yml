@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   front:
-    image: bizgpt/bizgpt-frontend:2.0.0
+    image: bizgpt/${PROJECT_NAME}:2.0.0
     build: .
     command: sh -c "cd app && npm run start"
     volumes:
@@ -12,15 +12,15 @@ services:
     restart: unless-stopped
     labels:
       - traefik.http.routers.front-${PROJECT_NAME}.rule=Host(`${SITE_URL}`)
-      - "traefik.http.routers.front-${PROJECT_NAME}.tls=true"
-      - "traefik.http.routers.front-${PROJECT_NAME}.tls.domains[0].main=${SITE_URL}"
-      - "traefik.http.routers.front-${PROJECT_NAME}.tls.certresolver=myresolver"
-      - "traefik.docker.network=local-traefik-network"
+      - 'traefik.http.routers.front-${PROJECT_NAME}.tls=true'
+      - 'traefik.http.routers.front-${PROJECT_NAME}.tls.domains[0].main=${SITE_URL}'
+      - 'traefik.http.routers.front-${PROJECT_NAME}.tls.certresolver=myresolver'
+      - 'traefik.docker.network=local-traefik-network'
     networks:
       - local-traefik-network
 
-# /_next/static
-#PathPrefix(`/products/`
+  # /_next/static
+  #PathPrefix(`/products/`
   nginx:
     image: nginx:1.23.0-alpine
     restart: unless-stopped
@@ -29,23 +29,22 @@ services:
       - ./.next/static:/_next/static
       - /var/lib/letsencrypt:/var/lib/letsencrypt:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
-#    ports:
-      # - 80:80
-#      - ${NGINX_PORT}:${NODE_PORT}
+    #    ports:
+    # - 80:80
+    #      - ${NGINX_PORT}:${NODE_PORT}
     env_file:
       - .env
     depends_on:
       - front
     container_name: nginx-${PROJECT_NAME}
     labels:
-      - "traefik.http.routers.nginx-${PROJECT_NAME}.rule=(Host(`${SITE_URL}`) && PathPrefix(`/_next/static`))"
-      - "traefik.http.routers.nginx-${PROJECT_NAME}.tls=true"
-      - "traefik.http.routers.nginx-${PROJECT_NAME}.tls.domains[0].main=${SITE_URL}"
-      - "traefik.http.routers.nginx-${PROJECT_NAME}.tls.certresolver=myresolver"
-      - "traefik.docker.network=local-traefik-network"
+      - 'traefik.http.routers.nginx-${PROJECT_NAME}.rule=(Host(`${SITE_URL}`) && PathPrefix(`/_next/static`))'
+      - 'traefik.http.routers.nginx-${PROJECT_NAME}.tls=true'
+      - 'traefik.http.routers.nginx-${PROJECT_NAME}.tls.domains[0].main=${SITE_URL}'
+      - 'traefik.http.routers.nginx-${PROJECT_NAME}.tls.certresolver=myresolver'
+      - 'traefik.docker.network=local-traefik-network'
     networks:
       - local-traefik-network
-
 
 networks:
   local-traefik-network:
