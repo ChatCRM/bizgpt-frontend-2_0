@@ -51,46 +51,35 @@ export async function POST(req: Request) {
   // console.log(`ThreadId Is: ${threadId}`)
   console.log(`AssitatntId Is: ${assistantId}`)
 
-  // const content = question_text
+  const content = question_text
   // console.log('content is: ' + question_text)
   // await openai.beta.threads.messages.create(threadId, {
   //   role: 'user',
   //   content: question_text
   // })
   const instructions = `
-    Task Description:
-    Your primary responsibility is to assist legal professionals by providing accurate and relevant content from the documents supplied to you in response to their questions.
-    Instructions:
-
-        Answering Guidelines:
-            Your answers must be strictly based on the information provided in the documents.
-            If the information in the documents is insufficient to answer the user's question, simply state: "The question is not covered in the resources provided to you."
-            Do not add any personal judgment or external information to your response.
-
-        Response Format:
-            Question: 'تسبیب محض چیست؟'
-            Answer: برای جواب به این سوال به قسمت‌های زیر توجه کنید:
-                {Your Answer}
-                {Content used to form your answer: Rephrase the content here to make it readable and clear for users}
-            Source: {filename} -> {page number}
-
-    Important:
-    Do not used code format in your response, only regular texts are allowed.
-    All responses must be provided in the Persian language.
+    You are an financhial assistant which can assist users about financial statements.
+    Analyze the following pdf with with the id of 
+    file-tgb9eZge2B8MgCfnmViz0hCO
+    which is the financial statement of Noori company and the pdf file with the if of 
+    file-pk590gOloxBreGJmxQbK5bXg which the financial statement of Booali company
+    and answer questions about them. 
+    In response, when the result is tabular use table markdown format
+    You must return your answer only in Persian language.
   `
   const stream = await openai.beta.threads.createAndRun({
     assistant_id: assistantId,
     instructions: instructions,
-    temperature: 0,
-    thread: {
-      messages: messages
-    },
+    temperature: 0.2,
     stream: true,
-    tool_resources: {
-      file_search: { vector_store_ids: ['vs_c8ThlMskfSg25FAP2Y1K1xiT'] }
+    thread: {
+      messages: [{ role: 'user', content: content }] //messages
     },
-    max_completion_tokens: 55000,
-    max_prompt_tokens: 55000
+    tool_resources: {
+      file_search: { vector_store_ids: ['vs_rDjOoBBDotfc2Uu6wTIKeqJa'] }
+    }
+    //   max_completion_tokens: 55000,
+    //   max_prompt_tokens: 55000
   })
   const pattern = /【\d+:\d+†source】/g
   let final_answer = ''
