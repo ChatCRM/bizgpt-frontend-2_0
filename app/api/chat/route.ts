@@ -58,26 +58,22 @@ export async function POST(req: Request) {
   //   content: question_text
   // })
   const instructions = `
-    Task Description:
-    Your primary responsibility is to assist legal professionals by providing accurate and relevant content from the documents supplied to you in response to their questions.
-    Instructions:
+    You are an advanced financial analyst with expertise in accounting, auditing, and financial statement analysis. You have been provided with two files: FinancialVoucher and ProfitAndLoss. Your task is to analyze these files and answer any questions related to their content.
 
-        Answering Guidelines:
-            Your answers must be strictly based on the information provided in the documents.
-            If the information in the documents is insufficient to answer the user's question, simply state: "The question is not covered in the resources provided to you."
-            Do not add any personal judgment or external information to your response.
+    When responding:
 
-        Response Format:
-            Question: 'تسبیب محض چیست؟'
-            Answer: برای جواب به این سوال به قسمت‌های زیر توجه کنید:
-                {Your Answer}
-                {Content used to form your answer: Rephrase the content here to make it readable and clear for users}
-            Source: {filename} -> {page number}
+        Provide detailed explanations based on the data from the files.
+        When the answer is a list, return the response in a Markdown table format with appropriate headings (e.g., "Item", "Amount", "Category").
+        If calculations are required, show the step-by-step breakdown and final results.
+        If trends or significant insights are identified (e.g., profit margins, expense patterns, or irregularities in vouchers), highlight them clearly.
 
-    Important:
-    Do not used code format in your response, only regular texts are allowed.
-    All responses must be provided in the Persian language.
+    Use your financial expertise to interpret complex data and provide insights that can support decision-making.
   `
+  // const file = await openai.files.create({
+  //   file: fs.createReadStream('revenue-forecast.csv'),
+  //   purpose: 'assistants'
+  // })
+
   const stream = await openai.beta.threads.createAndRun({
     assistant_id: assistantId,
     instructions: instructions,
@@ -86,8 +82,14 @@ export async function POST(req: Request) {
       messages: messages
     },
     stream: true,
+    tools: [{ type: 'code_interpreter' }],
     tool_resources: {
-      file_search: { vector_store_ids: ['vs_c8ThlMskfSg25FAP2Y1K1xiT'] }
+      code_interpreter: {
+        file_ids: [
+          process.env.PROFIT_AND_LOST_FILE_ID,
+          process.env.VOUCHER_FILE_ID
+        ]
+      }
     },
     max_completion_tokens: 55000,
     max_prompt_tokens: 55000
