@@ -16,7 +16,8 @@ export async function getUserRole(id: string | undefined): Promise<any> {
   const role_data = await supabase
     .from('user_bizgpt_role')
     .select('role')
-    .eq('user', id).maybeSingle()
+    .eq('user', id)
+    .maybeSingle()
 
   return role_data.data?.role
 }
@@ -30,9 +31,8 @@ export async function getBookmarkedMessagesSupabase(id: string) {
     .eq('id', id)
     .maybeSingle()
 
-  return (data?.payload) ?? null
+  return data?.payload ?? null
 }
-
 
 export async function submitFeedback(payload: object) {
   revalidateTag('feedbacks-cache')
@@ -42,7 +42,6 @@ export async function submitBookmark(payload: object) {
 }
 
 export async function getBookmarksSupabase(user_id: string, chat_id: string) {
-
   const supabase = createClientSchema()
   const { data } = await supabase
     .from('bookmarks')
@@ -51,11 +50,10 @@ export async function getBookmarksSupabase(user_id: string, chat_id: string) {
     .eq('chat_id', chat_id)
     .maybeSingle()
 
-  return (data?.payload) ?? null
+  return data?.payload ?? null
 }
 
 export async function getAllBookmarksSupabase(user_id: string) {
-
   const supabase = createClientSchema()
   const { data } = await supabase
     .from('bookmarks')
@@ -63,7 +61,7 @@ export async function getAllBookmarksSupabase(user_id: string) {
     .eq('user_id', user_id)
     .maybeSingle()
 
-  return (data?.payload) ?? null
+  return data?.payload ?? null
 }
 
 export async function getFeedbacksSupabase(user_id: string, chat_id: string) {
@@ -75,7 +73,7 @@ export async function getFeedbacksSupabase(user_id: string, chat_id: string) {
     .eq('chat_id', chat_id)
     .maybeSingle()
 
-  return (data?.payload) ?? null
+  return data?.payload ?? null
 }
 
 export async function getAllFeedbacksSupabase(user_id: string) {
@@ -86,72 +84,81 @@ export async function getAllFeedbacksSupabase(user_id: string) {
     .eq('user_id', user_id)
     .maybeSingle()
 
-  return (data?.payload) ?? null
+  return data?.payload ?? null
 }
 
-export async function getBookmarksLocal(username: string, chat_id: string): Promise<JSON> {
-  const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_BOOKMARK_RETRIEVE_PATH}`
-  const payload = { 'username': username , 'chat_id': chat_id};
-  let output;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${process.env.BizGPT_CLIENT_API_TOKEN_FRONTEND}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload),
-    next: { revalidate: 5, tags: ['bookmarks-cache'] }
-  })
-  if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch/retrieve bookmark data - The main component')
-  }
-  output = await res.json();
-  return output
+export async function getBookmarksLocal(
+  username: string,
+  chat_id: string
+): Promise<JSON> {
+  return ''
+  // const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_BOOKMARK_RETRIEVE_PATH}`
+  // const payload = { 'username': username , 'chat_id': chat_id};
+  // let output;
+  // const res = await fetch(url, {
+  //   method: 'POST',
+  //   headers: {
+  //     'Accept': 'application/json',
+  //     'Authorization': `Bearer ${process.env.BizGPT_CLIENT_API_TOKEN_FRONTEND}`,
+  //     'Content-Type': 'application/json'
+  //   },
+  //   body: JSON.stringify(payload),
+  //   next: { revalidate: 5, tags: ['bookmarks-cache'] }
+  // })
+  // if (!res.ok) {
+  //   // This will activate the closest `error.js` Error Boundary
+  //   throw new Error('Failed to fetch/retrieve bookmark data - The main component')
+  // }
+  // output = await res.json();
+  // return output
 }
 
-export async function getFeedbacksLocal(username: string, chat_id: string): Promise<JSON> {
-  const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_FEEDBACK_RETRIEVE_PATH}`
-  const payload = { 'username': username , 'chat_id': chat_id};
-  let output;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${process.env.BizGPT_CLIENT_API_TOKEN_FRONTEND}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload),
-    next: { revalidate: 5, tags: ['feedbacks-cache'] }
-  })
-  if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch/retrieve feedback data - The main component')
-  }
-  output = await res.json();
-  return output
+export async function getFeedbacksLocal(
+  username: string,
+  chat_id: string
+): Promise<JSON> {
+  return ''
+  // const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_FEEDBACK_RETRIEVE_PATH}`
+  // const payload = { username: username, chat_id: chat_id }
+  // let output
+  // const res = await fetch(url, {
+  //   method: 'POST',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     Authorization: `Bearer ${process.env.BizGPT_CLIENT_API_TOKEN_FRONTEND}`,
+  //     'Content-Type': 'application/json'
+  //   },
+  //   body: JSON.stringify(payload),
+  //   next: { revalidate: 5, tags: ['feedbacks-cache'] }
+  // })
+  // if (!res.ok) {
+  //   // This will activate the closest `error.js` Error Boundary
+  //   throw new Error(
+  //     'Failed to fetch/retrieve feedback data - The main component'
+  //   )
+  // }
+  // output = await res.json()
+  // return output
 }
-
 
 export async function getChatLocal(username: string, chat_id: string) {
   const url = `${process.env.BizGPT_CLIENT_API_BASE_ADDRESS_SCHEME}://${process.env.BizGPT_CLIENT_API_BASE_ADDRESS}:${process.env.BizGPT_CLIENT_API_PORT}/${process.env.BizGT_CLIENT_API_MESSAGES_RETRIEVE_PATH}`
-  const payload = { 'username': username, "chat_id": chat_id };
+  const payload = { username: username, chat_id: chat_id }
   const res = await fetch(url, {
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${process.env.BizGPT_CLIENT_API_TOKEN_FRONTEND}`,
+      Accept: 'application/json',
+      Authorization: `Bearer ${process.env.BizGPT_CLIENT_API_TOKEN_FRONTEND}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(payload),
-    next: { cache: 'no-store'  }
+    next: { cache: 'no-store' }
   })
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
     throw new Error('Failed to fetch/retrieve chat data - The main component')
   }
-  const data = await res.json();
+  const data = await res.json()
 
   return (data as Chat) ?? null
 }
@@ -185,7 +192,6 @@ export async function getChatSupabase(id: string) {
 
   return (data?.payload as Chat) ?? null
 }
-
 
 export async function removeChat({ id, path }: { id: string; path: string }) {
   try {

@@ -58,16 +58,19 @@ export async function POST(req: Request) {
   //   content: question_text
   // })
   const instructions = `
-    You are an advanced financial analyst with expertise in accounting, auditing, and financial statement analysis. You have been provided with two files: FinancialVoucher and ProfitAndLoss. Your task is to analyze these files and answer any questions related to their content.
+    You are an advanced financial analyst with expertise in accounting, auditing, and financial statement analysis. You have access to two files:
 
-    When responding:
+    Profit and Loss Statement: file-Tt6L4Xo91vK5Ms7tTszpeyKV
+    Financial Voucher: file-QZOTEtkQegWhYMEHkbogTBLP
 
-        Provide detailed explanations based on the data from the files.
-        When the answer is a list, return the response in a Markdown table format with appropriate headings (e.g., "Item", "Amount", "Category").
-        If calculations are required, show the step-by-step breakdown and final results.
-        If trends or significant insights are identified (e.g., profit margins, expense patterns, or irregularities in vouchers), highlight them clearly.
+    Your task is to analyze these files and answer any questions related to their content. You should:
 
-    Use your financial expertise to interpret complex data and provide insights that can support decision-making.
+        Provide the final answer without additional details unless explicitly asked.
+        When the question pertains to the Profit and Loss Statement, format your response to closely resemble the P&L format.
+        If lists are needed, return the response in a Markdown table with headings like "Item," "Amount," "Category."
+        Only ask about these two files during your analysis.
+
+    Make use of your financial expertise to interpret complex data and provide insights that can support decision-making.
   `
   // const file = await openai.files.create({
   //   file: fs.createReadStream('revenue-forecast.csv'),
