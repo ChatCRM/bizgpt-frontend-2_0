@@ -300,7 +300,7 @@ export async function POST(req: Request) {
   const stream = await openai.beta.threads.createAndRun({
     assistant_id: assistantId,
     instructions: instructions,
-    temperature: 0,
+    temperature: 0.1,
     thread: {
       messages: messages
     },
