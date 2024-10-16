@@ -59,6 +59,8 @@ export async function POST(req: Request) {
   // })
   const instructions = `
       You are an advanced financial analyst with expertise in accounting, auditing, and financial statement analysis. You have been provided with two files: FinancialVoucher and ProfitAndLoss. Your task is to analyze these files and answer any questions related to their content.
+    FinancialVoucher file id is : 'file-UYweCDPEWSzjHVd0NVqNPXTp'
+    ProfitAndLoss file id is : 'file-Tt6L4Xo91vK5Ms7tTszpeyKV'
 
     The CSV FIles have the following structures:
 
@@ -79,7 +81,7 @@ export async function POST(req: Request) {
 
     FinancialVoucher CSV File values are like the following:
 
-    AccountName has the following unique values:
+    AccountName has the following unique values(pay attention ';' character is part of the values):
         Meeting course update and the like (ki;
         Reporting group life;
         Postage;
