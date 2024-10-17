@@ -299,7 +299,7 @@ export async function POST(req: Request) {
   const stream = await openai.beta.threads.createAndRun({
     assistant_id: assistantId,
     // instructions: instructions,
-    temperature: 0.1,
+    temperature: 0,
     thread: {
       messages: messages
     },
@@ -312,9 +312,7 @@ export async function POST(req: Request) {
           process.env.VOUCHER_FILE_ID
         ]
       }
-    },
-    max_completion_tokens: 55000,
-    max_prompt_tokens: 55000
+    }
   })
   const pattern = /【\d+:\d+†source】/g
   let final_answer = ''
