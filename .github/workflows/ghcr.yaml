@@ -5,7 +5,7 @@ on:
     branches:
       - sarmad
 jobs:
-  publish-hello-docker-image:
+  publish-sarmad-docker-image:
     runs-on: ubuntu-latest
     environment: sarmad
     steps:
