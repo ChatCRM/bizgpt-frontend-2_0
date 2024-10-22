@@ -304,14 +304,8 @@ export async function POST(req: Request) {
       messages: messages
     },
     stream: true,
-    tools: [{ type: 'code_interpreter' }],
     tool_resources: {
-      code_interpreter: {
-        file_ids: [
-          process.env.PROFIT_AND_LOST_FILE_ID,
-          process.env.VOUCHER_FILE_ID
-        ]
-      }
+      file_search: { vector_store_ids: ['vs_gPCtwiyn0sYXrdGHIpXrHVh9'] }
     }
   })
   const pattern = /【\d+:\d+†source】/g
