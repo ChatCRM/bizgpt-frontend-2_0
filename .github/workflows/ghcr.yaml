@@ -7,7 +7,7 @@ on:
 jobs:
   publish-hello-docker-image:
     runs-on: ubuntu-latest
-
+    environment: sarmad
     steps:
       - uses: actions/checkout@v2
 
@@ -22,7 +22,7 @@ jobs:
 
           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Build the hello-docker Docker image
+      - name: Build the Sarmad Docker image
 
         run: |
 
