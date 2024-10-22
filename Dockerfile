@@ -1,6 +1,9 @@
 # Use Node.js 20 as the base image
 FROM node:20-alpine AS base
 
+ARG OPENAI_API_KEY
+ENV OPENAI_API_KEY=$OPENAI_API_KEY
+
 # Install pnpm
 RUN npm install -g pnpm
 
