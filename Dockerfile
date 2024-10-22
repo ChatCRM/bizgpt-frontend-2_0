@@ -42,7 +42,7 @@ RUN npm install -g pnpm && \
 # Copy built assets from the base stage
 COPY --from=base /app/.next ./.next
 COPY --from=base /app/public ./public
-COPY --from=base /app/next.config.mjs ./next.config.mjs
+COPY --from=base /app/next.config.js ./next.config.js
 
 # Expose the port the app runs on
 EXPOSE 3000
