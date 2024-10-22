@@ -43,6 +43,14 @@ RUN npm install -g pnpm && \
 COPY --from=base /app/.next ./.next
 COPY --from=base /app/public ./public
 COPY --from=base /app/next.config.js ./next.config.js
+COPY --from=base /app/components ./components
+COPY --from=base /app/context ./context
+COPY --from=base /app/lib ./lib
+COPY --from=base /app/translation ./translation
+COPY --from=base /app/utils ./utils
+COPY --from=base /app/middleware.ts ./middleware.ts
+COPY --from=base /app/auth.ts ./auth.ts
+COPY --from=base /app/components.json ./components.json
 
 # Expose the port the app runs on
 EXPOSE 3000
