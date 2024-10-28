@@ -1,32 +1,11 @@
 // @ts-nocheck
 import 'server-only'
 import { assistantId } from '@/app/assistant-config'
-import { StreamingTextResponse } from 'ai'
 import { createClientSchema } from '@/utils/supabase/server'
-import { cookies } from 'next/headers'
 import { generateUUID } from '@/lib/utils'
-import { Readable } from 'stream'
 
 export const maxDuration = 120
 export const runtime = 'nodejs'
-
-async function createReadableStream(response) {
-  const reader = response.body.getReader()
-  return new ReadableStream({
-    async start(controller) {
-      try {
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
-          controller.enqueue(value)
-        }
-      } finally {
-        reader.releaseLock()
-        controller.close()
-      }
-    }
-  })
-}
 
 export async function POST(req: Request) {
   const supabase = createClientSchema()
@@ -60,118 +39,88 @@ export async function POST(req: Request) {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
+
     const pattern = /【\d+:\d+†source】/g
     let final_answer = ''
+    const decoder = new TextDecoder()
+    const reader = response.body.getReader()
 
-    // Create a TransformStream to process the chunks
-    const transformStream = new TransformStream({
-      async transform(chunk, controller) {
-        const text = new TextDecoder().decode(chunk)
-        try {
-          const events = text.split('\n\n').filter(Boolean)
-          // console.log(`events is: ${events}`)
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
 
-          for (const event of events) {
-            // console.log(`event is: ${event}`)
-            const lines = event.split('\n')
-            const eventData = {}
-            for (const line of lines) {
-              // console.log(`Line is: ${line}`)
-              if (line.startsWith('event: ')) {
-                // console.log(`event is: ${line.slice(7)}`)
-                eventData.event = line.slice(7) // Remove 'event: '
-              } else if (line.startsWith('data: ')) {
-                try {
-                  eventData.data = JSON.parse(line.slice(6)) // Remove 'data: '
-                  // console.log(`data is: ${line.slice(6)}`)
-                } catch (e) {
-                  console.error('Failed to parse JSON:', e)
-                  continue
-                }
-              }
-            }
+      const text = decoder.decode(value)
+      const events = text.split('\n\n').filter(Boolean)
 
-            if (eventData.event === 'thread.message.completed') {
-              const data = eventData.data
-              // console.log(`data is: ${data}`)
-              final_answer = data.content[0].text.value
-              final_answer = final_answer.replace(pattern, '')
-              // console.log(`Final answer is: ${final_answer}`)
+      for (const event of events) {
+        const lines = event.split('\n')
+        const eventData = {}
 
-              // Save to database
-              const title = json.messages[0].content.substring(0, 100)
-              const id = json.id ?? generateUUID()
-              const createdAt = Date.now()
-              const path = `/chat/${id}`
-
-              const payload = {
-                id,
-                title,
-                userId,
-                createdAt,
-                path,
-                messages: [
-                  ...messages,
-                  {
-                    content: final_answer,
-                    role: 'assistant'
-                  }
-                ]
-              }
-
-              // Update or insert chat record
-              const { data: record } = await supabase
-                .from('chats')
-                .select('*')
-                .eq('chat_id', json.id)
-                .maybeSingle()
-                .throwOnError()
-
-              if (record?.id) {
-                await supabase
-                  .from('chats')
-                  .update({ payload })
-                  .eq('chat_id', json.id)
-              } else {
-                await supabase
-                  .from('chats')
-                  .insert({ chat_id: id, user_id: userId, payload })
-              }
+        for (const line of lines) {
+          if (line.startsWith('event: ')) {
+            eventData.event = line.slice(7)
+          } else if (line.startsWith('data: ')) {
+            try {
+              eventData.data = JSON.parse(line.slice(6))
+            } catch (e) {
+              console.error('Failed to parse JSON:', e)
+              continue
             }
           }
-          // console.log(`Chunk is: ${chunk}`)
-          controller.enqueue(chunk)
-        } catch (error) {
-          console.error('Error processing chunk:', error)
-          controller.error(error)
+        }
+
+        if (eventData.event === 'thread.message.completed') {
+          const data = eventData.data
+          final_answer = data.content[0].text.value
+          final_answer = final_answer.replace(pattern, '')
+
+          // Save to database
+          const title = json.messages[0].content.substring(0, 100)
+          const id = json.id ?? generateUUID()
+          const createdAt = Date.now()
+          const path = `/chat/${id}`
+
+          const payload = {
+            id,
+            title,
+            userId,
+            createdAt,
+            path,
+            messages: [
+              ...messages,
+              {
+                content: final_answer,
+                role: 'assistant'
+              }
+            ]
+          }
+
+          // Update or insert chat record
+          const { data: record } = await supabase
+            .from('chats')
+            .select('*')
+            .eq('chat_id', json.id)
+            .maybeSingle()
+            .throwOnError()
+
+          if (record?.id) {
+            await supabase
+              .from('chats')
+              .update({ payload })
+              .eq('chat_id', json.id)
+          } else {
+            await supabase
+              .from('chats')
+              .insert({ chat_id: id, user_id: userId, payload })
+          }
         }
       }
+    }
+
+    // Return only the final answer as a regular Response
+    return new Response(final_answer, {
+      headers: { 'Content-Type': 'text/plain' }
     })
-
-    // Create a readable stream from the response
-    const readable = await createReadableStream(response)
-
-    // Pipe through the transform stream
-    const transformedStream = readable.pipeThrough(transformStream)
-
-    const res = new StreamingTextResponse(transformedStream)
-    console.log(`Final answer is: ${final_answer}`)
-    return res
-    // const stream_readable = new ReadableStream({
-    //   start(controller) {
-    //     // Convert the text message to a Uint8Array and enqueue it
-    //     const encoder = new TextEncoder()
-    //     const chunk = encoder.encode(final_answer)
-
-    //     // Enqueue the chunk
-    //     controller.enqueue(chunk)
-
-    //     // Close the stream
-    //     controller.close()
-    //   }
-    // })
-
-    // return new StreamingTextResponse(stream_readable)
   } catch (error) {
     console.error('Error in POST handler:', error)
     return new Response(
@@ -186,3 +135,4 @@ export async function POST(req: Request) {
     )
   }
 }
+‍
