@@ -18,23 +18,27 @@ export async function POST(req: Request) {
   }
 
   try {
-    const response = await fetch('http://localhost:3131/proxy-openai', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        assistant_id: assistantId,
-        temperature: 0,
-        thread: {
-          messages: messages
+    const response = await fetch(
+      'https://gateway.openairan.info/proxy-openai',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
         },
-        stream: true,
-        tool_resources: {
-          file_search: { vector_store_ids: ['vs_gPCtwiyn0sYXrdGHIpXrHVh9'] }
-        }
-      })
-    })
+        body: JSON.stringify({
+          assistant_id: assistantId,
+          temperature: 0,
+          thread: {
+            messages: messages
+          },
+          stream: true,
+          tool_resources: {
+            file_search: { vector_store_ids: ['vs_gPCtwiyn0sYXrdGHIpXrHVh9'] }
+          }
+        })
+      }
+    )
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
@@ -63,7 +67,7 @@ export async function POST(req: Request) {
             try {
               eventData.data = JSON.parse(line.slice(6))
             } catch (e) {
-              console.error('Failed to parse JSON:', e)
+              // console.error('Failed to parse JSON:', e)
               continue
             }
           }
@@ -135,4 +139,3 @@ export async function POST(req: Request) {
     )
   }
 }
-‍
