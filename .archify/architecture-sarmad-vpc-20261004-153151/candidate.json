@@ -1,0 +1,503 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Sarmad Private VPC — Services, Data Flow and LLM Audit Trail",
+    "output": ".archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.html",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "all",
+      "entries": {
+        "security": {
+          "label": "Ingress / egress control point"
+        },
+        "backend": {
+          "label": "Application service"
+        },
+        "database": {
+          "label": "Persistent store"
+        },
+        "cloud": {
+          "label": "Our relay (outside the VPC)"
+        },
+        "external": {
+          "label": "Third party / end user"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "browser",
+      "type": "external",
+      "label": "بیمبا users",
+      "sublabel": "browser",
+      "pos": [
+        60,
+        100
+      ],
+      "size": [
+        185,
+        60
+      ]
+    },
+    {
+      "id": "widget",
+      "type": "external",
+      "label": "Website widget",
+      "sublabel": "embedded on sarmadins.ir",
+      "pos": [
+        60,
+        230
+      ],
+      "size": [
+        185,
+        62
+      ]
+    },
+    {
+      "id": "sso",
+      "type": "external",
+      "label": "Customer SSO",
+      "sublabel": "sandbox.hz3.co",
+      "pos": [
+        60,
+        360
+      ],
+      "size": [
+        185,
+        60
+      ]
+    },
+    {
+      "id": "gemini",
+      "type": "external",
+      "label": "Google Gemini",
+      "sublabel": "Gemini API",
+      "pos": [
+        60,
+        490
+      ],
+      "size": [
+        185,
+        60
+      ]
+    },
+    {
+      "id": "smtp",
+      "type": "external",
+      "label": "Zoho SMTP",
+      "sublabel": "smtp.zoho.com",
+      "pos": [
+        60,
+        620
+      ],
+      "size": [
+        185,
+        60
+      ]
+    },
+    {
+      "id": "relay",
+      "type": "cloud",
+      "label": "Relay — dev.bizgpt.info",
+      "sublabel": "158.220.89.202 · nginx only",
+      "pos": [
+        60,
+        750
+      ],
+      "size": [
+        185,
+        70
+      ]
+    },
+    {
+      "id": "openrouter",
+      "type": "external",
+      "label": "openrouter.ai",
+      "sublabel": "LLM provider",
+      "pos": [
+        60,
+        885
+      ],
+      "size": [
+        185,
+        60
+      ]
+    },
+    {
+      "id": "bubble",
+      "type": "backend",
+      "label": "bubble-chat-api",
+      "sublabel": ":8000 · widget backend",
+      "pos": [
+        500,
+        100
+      ],
+      "size": [
+        200,
+        62
+      ]
+    },
+    {
+      "id": "dmz_nginx",
+      "type": "security",
+      "label": "nginx — ingress",
+      "sublabel": ":443 TLS · :80 · :8081 · :8082",
+      "pos": [
+        500,
+        230
+      ],
+      "size": [
+        200,
+        70
+      ]
+    },
+    {
+      "id": "tts",
+      "type": "backend",
+      "label": "gemini-tts wrapper",
+      "sublabel": ":3001 · speech",
+      "pos": [
+        500,
+        490
+      ],
+      "size": [
+        200,
+        62
+      ]
+    },
+    {
+      "id": "feedback",
+      "type": "backend",
+      "label": "feedback-report",
+      "sublabel": "nightly cron",
+      "pos": [
+        500,
+        620
+      ],
+      "size": [
+        200,
+        60
+      ]
+    },
+    {
+      "id": "litellm",
+      "type": "security",
+      "label": "LiteLLM :4000",
+      "sublabel": "the only model egress",
+      "pos": [
+        500,
+        750
+      ],
+      "size": [
+        200,
+        70
+      ]
+    },
+    {
+      "id": "litellm_db",
+      "type": "database",
+      "label": "litellm-db — AUDIT LOG",
+      "sublabel": "postgres 16 · LiteLLM_SpendLogs",
+      "pos": [
+        500,
+        885
+      ],
+      "size": [
+        200,
+        72
+      ]
+    },
+    {
+      "id": "openwebui",
+      "type": "backend",
+      "label": "open-webui",
+      "sublabel": ":8080 · the بیمبا assistant",
+      "pos": [
+        900,
+        230
+      ],
+      "size": [
+        200,
+        66
+      ]
+    },
+    {
+      "id": "pipelines",
+      "type": "backend",
+      "label": "pipelines",
+      "sublabel": ":9099",
+      "pos": [
+        900,
+        360
+      ],
+      "size": [
+        200,
+        60
+      ]
+    },
+    {
+      "id": "ragvol",
+      "type": "database",
+      "label": "Chroma vector store",
+      "sublabel": "RAG index · uploads · caches",
+      "pos": [
+        900,
+        490
+      ],
+      "size": [
+        200,
+        66
+      ]
+    },
+    {
+      "id": "db_nginx",
+      "type": "security",
+      "label": "nginx :8000",
+      "sublabel": "strips /rest/v1 — replaces Kong",
+      "pos": [
+        1400,
+        100
+      ],
+      "size": [
+        220,
+        66
+      ]
+    },
+    {
+      "id": "postgrest",
+      "type": "backend",
+      "label": "postgrest :3000",
+      "sublabel": "REST over the chat table",
+      "pos": [
+        1400,
+        230
+      ],
+      "size": [
+        220,
+        62
+      ]
+    },
+    {
+      "id": "postgres",
+      "type": "database",
+      "label": "postgres 15",
+      "sublabel": ":5432 · OpenWebUI data",
+      "pos": [
+        1400,
+        360
+      ],
+      "size": [
+        220,
+        70
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Customer private VPC — only the DMZ has a route to the internet",
+      "wraps": [
+        "bubble",
+        "dmz_nginx",
+        "tts",
+        "feedback",
+        "litellm",
+        "litellm_db",
+        "openwebui",
+        "pipelines",
+        "ragvol",
+        "db_nginx",
+        "postgrest",
+        "postgres"
+      ],
+      "pad": 26
+    },
+    {
+      "kind": "security-group",
+      "label": "Chatbot-DMZ · 172.17.1.26 · internet-facing",
+      "wraps": [
+        "bubble",
+        "dmz_nginx",
+        "tts",
+        "feedback",
+        "litellm",
+        "litellm_db"
+      ],
+      "pad": 14
+    },
+    {
+      "kind": "security-group",
+      "label": "Chatbot-App · 172.20.4.26 · no internet",
+      "wraps": [
+        "openwebui",
+        "pipelines",
+        "ragvol"
+      ],
+      "pad": 14
+    },
+    {
+      "kind": "security-group",
+      "label": "Chatbot-DB · 172.20.3.26 · no internet",
+      "wraps": [
+        "db_nginx",
+        "postgrest",
+        "postgres"
+      ],
+      "pad": 20
+    }
+  ],
+  "connections": [
+    {
+      "from": "browser",
+      "to": "dmz_nginx",
+      "label": ":443 bimebot.sarmadins.ir",
+      "variant": "emphasis"
+    },
+    {
+      "from": "widget",
+      "to": "dmz_nginx",
+      "label": ":443 chat-api.sarmadins.ir",
+      "variant": "emphasis"
+    },
+    {
+      "from": "dmz_nginx",
+      "to": "bubble",
+      "label": "proxy :8000",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "from": "dmz_nginx",
+      "to": "openwebui",
+      "label": ":8080 UI · :8082 SSO proxy",
+      "variant": "emphasis"
+    },
+    {
+      "from": "bubble",
+      "to": "db_nginx",
+      "label": ":8000 /rest/v1/chat"
+    },
+    {
+      "from": "db_nginx",
+      "to": "postgrest",
+      "label": "proxy",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "postgrest",
+      "to": "postgres",
+      "label": ":5432 SQL",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "openwebui",
+      "to": "postgres",
+      "label": ":5432 app data"
+    },
+    {
+      "from": "openwebui",
+      "to": "ragvol",
+      "label": "RAG retrieval",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "openwebui",
+      "to": "litellm",
+      "label": ":4000 every completion + embedding",
+      "variant": "emphasis"
+    },
+    {
+      "from": "openwebui",
+      "to": "tts",
+      "label": ":3001 speech"
+    },
+    {
+      "from": "dmz_nginx",
+      "to": "sso",
+      "label": ":443 validateToken",
+      "variant": "dashed"
+    },
+    {
+      "from": "tts",
+      "to": "gemini",
+      "label": ":443 Gemini API"
+    },
+    {
+      "from": "feedback",
+      "to": "smtp",
+      "label": ":587 SMTP"
+    },
+    {
+      "from": "feedback",
+      "to": "postgres",
+      "label": ":5432 read",
+      "variant": "dashed"
+    },
+    {
+      "from": "litellm",
+      "to": "litellm_db",
+      "label": "writes prompt + response BEFORE egress",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "litellm",
+      "to": "relay",
+      "label": ":443 — the only LLM egress",
+      "variant": "security"
+    },
+    {
+      "from": "relay",
+      "to": "openrouter",
+      "label": ":443 HTTPS",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "bubble",
+      "to": "dmz_nginx",
+      "label": "hairpin :443 for completions",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Audit what text left the VPC",
+      "items": [
+        "Every model call is written to litellm-db before egress — nothing can bypass it",
+        "Table LiteLLM_SpendLogs holds messages and response: the full prompt and the full reply",
+        "Also request_id, startTime, model, api_key (which app), tokens, spend, status, requester_ip_address",
+        "Volume sarmad-dmz_litellm_pg on the DMZ; read it with: docker compose exec litellm-db psql -U litellm -d litellm"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Single egress, by construction",
+      "items": [
+        "App and DB have no route to the internet at all",
+        "App reaches OpenRouter only through LiteLLM on the DMZ",
+        "App reaches the customer SSO only through DMZ nginx on :8082",
+        "The relay forwards to openrouter.ai and stores no credentials — the API key never leaves the VPC"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Other logs and facts on the DMZ",
+      "items": [
+        "nginx access and error logs — who called the public endpoints",
+        "docker compose logs per container: litellm, bubble-chat-api, tts, feedback-report",
+        "Wildcard cert *.sarmadins.ir (Certum) expires 26 Jan 2027",
+        "postgres holds chat, user, model, knowledge, file and config tables",
+        "Prompt bodies are insurance-customer conversations: add a purge job before this becomes a liability"
+      ]
+    }
+  ]
+}

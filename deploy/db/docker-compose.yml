@@ -1,0 +1,93 @@
+# Chatbot-DB  172.20.3.26 — no internet.
+# Replaces the 20-container Supabase stack with postgres + postgrest.
+# Kong is gone: it depends_on supabase-analytics (logflare), which is what
+# generated the 38 GB of log_events we are not migrating. nginx does the one
+# thing Kong did for us — strip the /rest/v1 prefix that supabase-py adds.
+name: sarmad-db
+
+services:
+  postgres:
+    # Same image as the source. The dump carries CREATE EXTENSION for pgsodium,
+    # vault, pg_net and pg_graphql plus supabase-owned roles; plain postgres:15
+    # refuses them.
+    image: supabase/postgres:15.1.1.78
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      JWT_SECRET: ${JWT_SECRET:?}
+      JWT_EXP: 3600
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - log_min_messages=fatal
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backups:/backups
+    ports:
+      # Private interface only. App reaches this; nothing else can.
+      - "${HOST_IP:?}:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  postgrest:
+    image: postgrest/postgrest:v12.2.0
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD:?}@postgres:5432/postgres
+      PGRST_DB_SCHEMAS: public,storage,graphql_public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET:?}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET:?}
+      PGRST_APP_SETTINGS_JWT_EXP: 3600
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on: [postgrest]
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "${HOST_IP:?}:8000:8000"
+
+  backup:
+    # Nightly pg_dump with an explicit retention count. The last outage on the
+    # old box was 252 GB of un-pruned dumps; retention is not optional here.
+    image: supabase/postgres:15.1.1.78
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:?}
+      RETAIN: ${BACKUP_RETAIN:-7}
+    volumes:
+      - ./backups:/backups
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        while :; do
+          sleep $$(( ( $$(date -d 03:00 +%s) - $$(date +%s) + 86400 ) % 86400 ))
+          f=/backups/postgres-$$(date +%F-%H%M).dump
+          pg_dump -h postgres -U postgres -Fc -d postgres > "$$f" && echo "backup $$f"
+          ls -1t /backups/postgres-*.dump | tail -n +$$(( RETAIN + 1 )) | xargs -r rm -f
+          df -h /backups | tail -1
+        done
+
+volumes:
+  pgdata:
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 10.201.10.0/24

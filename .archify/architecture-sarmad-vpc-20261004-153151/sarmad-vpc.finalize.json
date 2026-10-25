@@ -1,0 +1,1150 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "startedAt": "2026-10-04T14:10:19.348Z",
+  "specification": {
+    "path": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/candidate.json",
+    "sha256": "3c4799e38f08af26ec237aecfe337f52290bbc51e8e69551b9b7e36cbc1f1c63",
+    "bytes": 10283
+  },
+  "artifact": {
+    "path": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.html",
+    "sha256": "539775a9a969bd41ca8ae5e760f6b08c7f086a356da59cb5eee8689014a1f68d",
+    "bytes": 793443
+  },
+  "stages": {
+    "validate": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": null,
+      "execution": "embedded-in-deliver",
+      "command": [
+        "/Users/alimohamadzade/.nvm/versions/node/v23.3.0/bin/node",
+        "/Users/alimohamadzade/.agents/skills/archify/bin/archify.mjs",
+        "deliver",
+        "architecture",
+        "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/candidate.json",
+        "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.html",
+        "--quality",
+        "showcase",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "ok": true,
+        "command": "validate",
+        "specification": {
+          "sha256": "3c4799e38f08af26ec237aecfe337f52290bbc51e8e69551b9b7e36cbc1f1c63",
+          "bytes": 10283
+        },
+        "validation": {
+          "checksPassed": 9,
+          "checkCount": 9,
+          "compositionProfile": "showcase",
+          "compositionStatus": "pass",
+          "errors": 0,
+          "warnings": 0
+        }
+      }
+    },
+    "deliver": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 1048,
+      "command": [
+        "/Users/alimohamadzade/.nvm/versions/node/v23.3.0/bin/node",
+        "/Users/alimohamadzade/.agents/skills/archify/bin/archify.mjs",
+        "deliver",
+        "architecture",
+        "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/candidate.json",
+        "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.html",
+        "--quality",
+        "showcase",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "receiptId": "3c4a1277-1d60-4aa5-9955-55c0c012e9db",
+        "ok": true,
+        "command": "deliver",
+        "type": "architecture",
+        "input": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/candidate.json",
+        "output": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.html",
+        "specification": {
+          "sha256": "3c4799e38f08af26ec237aecfe337f52290bbc51e8e69551b9b7e36cbc1f1c63",
+          "bytes": 10283
+        },
+        "artifact": {
+          "sha256": "539775a9a969bd41ca8ae5e760f6b08c7f086a356da59cb5eee8689014a1f68d",
+          "bytes": 793443
+        },
+        "validation": {
+          "checksPassed": 9,
+          "checkCount": 9,
+          "compositionProfile": "showcase",
+          "compositionStatus": "pass",
+          "errors": 0,
+          "warnings": 0
+        },
+        "update": {
+          "status": "unavailable",
+          "installedVersion": null,
+          "availableVersion": null,
+          "releaseNotes": null,
+          "checkedAt": null,
+          "source": null,
+          "noticeRequired": false,
+          "noticeText": null,
+          "reason": "disabled"
+        }
+      }
+    },
+    "check": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 680,
+      "command": [
+        "/Users/alimohamadzade/.nvm/versions/node/v23.3.0/bin/node",
+        "/Users/alimohamadzade/.agents/skills/archify/bin/archify.mjs",
+        "check",
+        "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.html",
+        "--require-provenance"
+      ],
+      "receipt": {
+        "ok": true,
+        "file": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.html",
+        "artifact": {
+          "sha256": "539775a9a969bd41ca8ae5e760f6b08c7f086a356da59cb5eee8689014a1f68d",
+          "bytes": 793443
+        },
+        "checks": [
+          {
+            "name": "single_svg",
+            "ok": true,
+            "details": [
+              "found 1 <svg> block(s)"
+            ]
+          },
+          {
+            "name": "finite_svg",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "orthogonal_arrows",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "label_route_clearance",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "relationship_crossings",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "relationship_corridors",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "container_border_runs",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "route_rhythm",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "legend_clearance",
+            "ok": true,
+            "details": []
+          }
+        ],
+        "composition": {
+          "schemaVersion": 1,
+          "profile": "showcase",
+          "status": "pass",
+          "summary": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "metrics": {
+            "properCrossings": 0,
+            "resolvedCrossovers": 3,
+            "ambiguousCorridors": 0,
+            "arrowheadCollisions": 0,
+            "containerBorderRuns": 0,
+            "labelRouteClearanceIssues": 0,
+            "labelCanvasOverflowIssues": 0,
+            "minLabelRouteClearance": 8.8,
+            "desktopReadabilityIssues": 0,
+            "viewportHeightIssues": 0,
+            "minProjectedNodeTextPx": 6.386714116251483,
+            "maxBends": 4,
+            "routesOverSuggestedBends": 5,
+            "maxStretch": 1.94,
+            "routesOverSuggestedStretch": 2,
+            "minSegmentPx": 16,
+            "minInteriorSegmentPx": 16,
+            "shortSegmentCount": 0,
+            "shortEndpointSegmentCount": 0,
+            "shortInteriorSegmentCount": 0,
+            "microSegmentCount": 0
+          },
+          "suggestedLimits": {
+            "bendsPerRelationship": 2,
+            "stretch": 1.35,
+            "segmentPx": 16,
+            "microSegmentPx": 8
+          },
+          "routeReview": {
+            "crossings": [
+              {
+                "left": {
+                  "from": "widget",
+                  "to": "dmz_nginx",
+                  "label": ":443 chat-api.sarmadins.ir",
+                  "collectionIndex": 1,
+                  "artifactIndex": 2
+                },
+                "right": {
+                  "from": "dmz_nginx",
+                  "to": "sso",
+                  "label": ":443 validateToken",
+                  "collectionIndex": 11,
+                  "artifactIndex": 12
+                },
+                "point": [
+                  444.90000000000015,
+                  324
+                ],
+                "sharedNode": "dmz_nginx"
+              },
+              {
+                "left": {
+                  "from": "bubble",
+                  "to": "db_nginx",
+                  "label": ":8000 /rest/v1/chat",
+                  "collectionIndex": 4,
+                  "artifactIndex": 5
+                },
+                "right": {
+                  "from": "bubble",
+                  "to": "dmz_nginx",
+                  "label": "hairpin :443 for completions",
+                  "collectionIndex": 18,
+                  "artifactIndex": 19
+                },
+                "point": [
+                  724,
+                  131
+                ],
+                "sharedNode": "bubble"
+              },
+              {
+                "left": {
+                  "from": "openwebui",
+                  "to": "litellm",
+                  "label": ":4000 every completion + embedding",
+                  "collectionIndex": 9,
+                  "artifactIndex": 10
+                },
+                "right": {
+                  "from": "feedback",
+                  "to": "postgres",
+                  "label": ":5432 read",
+                  "collectionIndex": 14,
+                  "artifactIndex": 15
+                },
+                "point": [
+                  868,
+                  650
+                ]
+              }
+            ],
+            "detours": [
+              {
+                "relationship": {
+                  "from": "widget",
+                  "to": "dmz_nginx",
+                  "label": ":443 chat-api.sarmadins.ir",
+                  "collectionIndex": 1,
+                  "artifactIndex": 2
+                },
+                "bends": 3,
+                "stretch": 1.122
+              },
+              {
+                "relationship": {
+                  "from": "dmz_nginx",
+                  "to": "openwebui",
+                  "label": ":8080 UI · :8082 SSO proxy",
+                  "collectionIndex": 3,
+                  "artifactIndex": 4
+                },
+                "bends": 4,
+                "stretch": 1.153
+              },
+              {
+                "relationship": {
+                  "from": "openwebui",
+                  "to": "ragvol",
+                  "label": "RAG retrieval",
+                  "collectionIndex": 8,
+                  "artifactIndex": 9
+                },
+                "bends": 4,
+                "stretch": 1.94,
+                "directCorridorBlockers": [
+                  {
+                    "id": "pipelines",
+                    "label": "pipelines",
+                    "box": [
+                      900,
+                      360,
+                      200,
+                      60
+                    ]
+                  }
+                ]
+              },
+              {
+                "relationship": {
+                  "from": "openwebui",
+                  "to": "litellm",
+                  "label": ":4000 every completion + embedding",
+                  "collectionIndex": 9,
+                  "artifactIndex": 10
+                },
+                "bends": 4,
+                "stretch": 1
+              },
+              {
+                "relationship": {
+                  "from": "openwebui",
+                  "to": "tts",
+                  "label": ":3001 speech",
+                  "collectionIndex": 10,
+                  "artifactIndex": 11
+                },
+                "bends": 3,
+                "stretch": 1
+              },
+              {
+                "relationship": {
+                  "from": "bubble",
+                  "to": "dmz_nginx",
+                  "label": "hairpin :443 for completions",
+                  "collectionIndex": 18,
+                  "artifactIndex": 19
+                },
+                "bends": 2,
+                "stretch": 1.361
+              }
+            ]
+          },
+          "leadingSpace": {
+            "measured": true,
+            "emptyTopPx": 54,
+            "emptyTopRatio": 0.052,
+            "occupiedTop": 54,
+            "viewBoxTop": 0,
+            "canvasHeight": 1045,
+            "typicalNodeHeight": 62,
+            "reviewSuggested": false
+          },
+          "desktopReadability": {
+            "budgetBasis": "recognized-declared-wide",
+            "readerContract": "declared-wide-v1",
+            "availableDiagramWidth": 1346,
+            "actualBudgetPx": 1346,
+            "actualReaderWidth": 1376,
+            "desiredReaderWidth": 1610.625,
+            "viewportCap": 1376,
+            "limit": "viewport-cap",
+            "requestedTargetPx": 7.5,
+            "requestedTargetMet": false,
+            "hardFloorPx": 6,
+            "hardFloorMet": true,
+            "minimumOwner": {
+              "kind": "edge",
+              "id": null,
+              "from": "browser",
+              "to": "dmz_nginx"
+            },
+            "minimumSourceTextPx": 8,
+            "minimumProjectedTextPx": 6.386714116251483,
+            "semanticTextCount": 61
+          },
+          "issues": []
+        },
+        "provenance": "current",
+        "deliveryReceiptId": "3c4a1277-1d60-4aa5-9955-55c0c012e9db"
+      }
+    },
+    "browser-check": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 2710,
+      "command": [
+        "/Users/alimohamadzade/.nvm/versions/node/v23.3.0/bin/node",
+        "/Users/alimohamadzade/.agents/skills/archify/bin/archify.mjs",
+        "browser-check",
+        "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.html",
+        "--json",
+        "--require-provenance"
+      ],
+      "execution": "in-process",
+      "receipt": {
+        "schemaVersion": 1,
+        "ok": true,
+        "command": "browser-check",
+        "evidenceKind": "automated-browser",
+        "status": "pass",
+        "visualReview": "not-requested",
+        "provenance": "current",
+        "deliveryReceiptId": "3c4a1277-1d60-4aa5-9955-55c0c012e9db",
+        "artifact": {
+          "path": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.html",
+          "sha256": "539775a9a969bd41ca8ae5e760f6b08c7f086a356da59cb5eee8689014a1f68d",
+          "bytes": 793443
+        },
+        "state": {
+          "detail": "read",
+          "motion": "still"
+        },
+        "chrome": {
+          "status": "available",
+          "executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        "diagnostics": [],
+        "containment": {
+          "status": "pass",
+          "policy": "fit-or-reader-declared-readable-vertical-scroll",
+          "viewports": [
+            {
+              "width": 1440,
+              "height": 900,
+              "theme": "light",
+              "innerWidth": 1440,
+              "innerHeight": 900,
+              "scrollWidth": 1440,
+              "scrollHeight": 977,
+              "overflowX": false,
+              "overflowY": true,
+              "verticalScrollAccepted": true,
+              "overflowDisposition": "readable-vertical-scroll",
+              "readerLayout": "adaptive",
+              "readerOverflow": "authored",
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1376,
+              "diagramWidth": 1346,
+              "pageComposition": {
+                "bodyPaddingPx": 12,
+                "headerPx": 52,
+                "diagramChromePx": 78,
+                "svgPx": 834,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 6.386714116251483,
+              "minimumProjectedNonEdgeTextPx": 7.185053380782918,
+              "minimumProjectedEdgeTextPx": 6.386714116251483,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 54,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            },
+            {
+              "width": 1600,
+              "height": 1000,
+              "theme": "light",
+              "innerWidth": 1600,
+              "innerHeight": 1000,
+              "scrollWidth": 1600,
+              "scrollHeight": 1142,
+              "overflowX": false,
+              "overflowY": true,
+              "verticalScrollAccepted": true,
+              "overflowDisposition": "readable-vertical-scroll",
+              "readerLayout": "adaptive",
+              "readerOverflow": "authored",
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1536,
+              "diagramWidth": 1506,
+              "pageComposition": {
+                "bodyPaddingPx": 64,
+                "headerPx": 60,
+                "diagramChromePx": 84,
+                "svgPx": 933,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 7.145907473309609,
+              "minimumProjectedNonEdgeTextPx": 8.03914590747331,
+              "minimumProjectedEdgeTextPx": 7.145907473309609,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 54,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            },
+            {
+              "width": 1920,
+              "height": 1080,
+              "theme": "light",
+              "innerWidth": 1920,
+              "innerHeight": 1080,
+              "scrollWidth": 1920,
+              "scrollHeight": 1189,
+              "overflowX": false,
+              "overflowY": true,
+              "verticalScrollAccepted": true,
+              "overflowDisposition": "readable-vertical-scroll",
+              "readerLayout": "adaptive",
+              "readerOverflow": "authored",
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1611,
+              "diagramWidth": 1581,
+              "pageComposition": {
+                "bodyPaddingPx": 64,
+                "headerPx": 60,
+                "diagramChromePx": 84,
+                "svgPx": 980,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 7.501779359430605,
+              "minimumProjectedNonEdgeTextPx": 8.43950177935943,
+              "minimumProjectedEdgeTextPx": 7.501779359430605,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 54,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            },
+            {
+              "width": 2048,
+              "height": 1320,
+              "theme": "light",
+              "innerWidth": 2048,
+              "innerHeight": 1320,
+              "scrollWidth": 2048,
+              "scrollHeight": 1320,
+              "overflowX": false,
+              "overflowY": false,
+              "verticalScrollAccepted": false,
+              "overflowDisposition": "contained",
+              "readerLayout": "adaptive",
+              "readerOverflow": null,
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1796,
+              "diagramWidth": 1746,
+              "pageComposition": {
+                "bodyPaddingPx": 64,
+                "headerPx": 68,
+                "diagramChromePx": 94,
+                "svgPx": 1082,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 8,
+              "minimumProjectedNonEdgeTextPx": 9,
+              "minimumProjectedEdgeTextPx": 8,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 44,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            }
+          ]
+        },
+        "themeStates": {
+          "status": "pass",
+          "viewports": [
+            {
+              "width": 1440,
+              "height": 900,
+              "requestedTheme": "light",
+              "resolvedTheme": "light",
+              "ok": true
+            },
+            {
+              "width": 1600,
+              "height": 1000,
+              "requestedTheme": "light",
+              "resolvedTheme": "light",
+              "ok": true
+            },
+            {
+              "width": 1920,
+              "height": 1080,
+              "requestedTheme": "light",
+              "resolvedTheme": "light",
+              "ok": true
+            },
+            {
+              "width": 2048,
+              "height": 1320,
+              "requestedTheme": "light",
+              "resolvedTheme": "light",
+              "ok": true
+            },
+            {
+              "width": 1440,
+              "height": 900,
+              "requestedTheme": "dark",
+              "resolvedTheme": "dark",
+              "ok": true
+            },
+            {
+              "width": 2048,
+              "height": 1320,
+              "requestedTheme": "dark",
+              "resolvedTheme": "dark",
+              "ok": true
+            }
+          ]
+        },
+        "readability": {
+          "status": "pass",
+          "minimumProjectedNodeTextPx": 6,
+          "viewports": [
+            {
+              "width": 1440,
+              "height": 900,
+              "theme": "light",
+              "innerWidth": 1440,
+              "innerHeight": 900,
+              "scrollWidth": 1440,
+              "scrollHeight": 977,
+              "overflowX": false,
+              "overflowY": true,
+              "verticalScrollAccepted": true,
+              "overflowDisposition": "readable-vertical-scroll",
+              "readerLayout": "adaptive",
+              "readerOverflow": "authored",
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1376,
+              "diagramWidth": 1346,
+              "pageComposition": {
+                "bodyPaddingPx": 12,
+                "headerPx": 52,
+                "diagramChromePx": 78,
+                "svgPx": 834,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 6.386714116251483,
+              "minimumProjectedNonEdgeTextPx": 7.185053380782918,
+              "minimumProjectedEdgeTextPx": 6.386714116251483,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 54,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            },
+            {
+              "width": 1600,
+              "height": 1000,
+              "theme": "light",
+              "innerWidth": 1600,
+              "innerHeight": 1000,
+              "scrollWidth": 1600,
+              "scrollHeight": 1142,
+              "overflowX": false,
+              "overflowY": true,
+              "verticalScrollAccepted": true,
+              "overflowDisposition": "readable-vertical-scroll",
+              "readerLayout": "adaptive",
+              "readerOverflow": "authored",
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1536,
+              "diagramWidth": 1506,
+              "pageComposition": {
+                "bodyPaddingPx": 64,
+                "headerPx": 60,
+                "diagramChromePx": 84,
+                "svgPx": 933,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 7.145907473309609,
+              "minimumProjectedNonEdgeTextPx": 8.03914590747331,
+              "minimumProjectedEdgeTextPx": 7.145907473309609,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 54,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            },
+            {
+              "width": 1920,
+              "height": 1080,
+              "theme": "light",
+              "innerWidth": 1920,
+              "innerHeight": 1080,
+              "scrollWidth": 1920,
+              "scrollHeight": 1189,
+              "overflowX": false,
+              "overflowY": true,
+              "verticalScrollAccepted": true,
+              "overflowDisposition": "readable-vertical-scroll",
+              "readerLayout": "adaptive",
+              "readerOverflow": "authored",
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1611,
+              "diagramWidth": 1581,
+              "pageComposition": {
+                "bodyPaddingPx": 64,
+                "headerPx": 60,
+                "diagramChromePx": 84,
+                "svgPx": 980,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 7.501779359430605,
+              "minimumProjectedNonEdgeTextPx": 8.43950177935943,
+              "minimumProjectedEdgeTextPx": 7.501779359430605,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 54,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            },
+            {
+              "width": 2048,
+              "height": 1320,
+              "theme": "light",
+              "innerWidth": 2048,
+              "innerHeight": 1320,
+              "scrollWidth": 2048,
+              "scrollHeight": 1320,
+              "overflowX": false,
+              "overflowY": false,
+              "verticalScrollAccepted": false,
+              "overflowDisposition": "contained",
+              "readerLayout": "adaptive",
+              "readerOverflow": null,
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1796,
+              "diagramWidth": 1746,
+              "pageComposition": {
+                "bodyPaddingPx": 64,
+                "headerPx": 68,
+                "diagramChromePx": 94,
+                "svgPx": 1082,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 8,
+              "minimumProjectedNonEdgeTextPx": 9,
+              "minimumProjectedEdgeTextPx": 8,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 44,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            }
+          ]
+        },
+        "viewerChrome": {
+          "status": "pass",
+          "viewports": [
+            {
+              "width": 1440,
+              "height": 900,
+              "theme": "light",
+              "innerWidth": 1440,
+              "innerHeight": 900,
+              "scrollWidth": 1440,
+              "scrollHeight": 977,
+              "overflowX": false,
+              "overflowY": true,
+              "verticalScrollAccepted": true,
+              "overflowDisposition": "readable-vertical-scroll",
+              "readerLayout": "adaptive",
+              "readerOverflow": "authored",
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1376,
+              "diagramWidth": 1346,
+              "pageComposition": {
+                "bodyPaddingPx": 12,
+                "headerPx": 52,
+                "diagramChromePx": 78,
+                "svgPx": 834,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 6.386714116251483,
+              "minimumProjectedNonEdgeTextPx": 7.185053380782918,
+              "minimumProjectedEdgeTextPx": 6.386714116251483,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 54,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            },
+            {
+              "width": 1600,
+              "height": 1000,
+              "theme": "light",
+              "innerWidth": 1600,
+              "innerHeight": 1000,
+              "scrollWidth": 1600,
+              "scrollHeight": 1142,
+              "overflowX": false,
+              "overflowY": true,
+              "verticalScrollAccepted": true,
+              "overflowDisposition": "readable-vertical-scroll",
+              "readerLayout": "adaptive",
+              "readerOverflow": "authored",
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1536,
+              "diagramWidth": 1506,
+              "pageComposition": {
+                "bodyPaddingPx": 64,
+                "headerPx": 60,
+                "diagramChromePx": 84,
+                "svgPx": 933,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 7.145907473309609,
+              "minimumProjectedNonEdgeTextPx": 8.03914590747331,
+              "minimumProjectedEdgeTextPx": 7.145907473309609,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 54,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            },
+            {
+              "width": 1920,
+              "height": 1080,
+              "theme": "light",
+              "innerWidth": 1920,
+              "innerHeight": 1080,
+              "scrollWidth": 1920,
+              "scrollHeight": 1189,
+              "overflowX": false,
+              "overflowY": true,
+              "verticalScrollAccepted": true,
+              "overflowDisposition": "readable-vertical-scroll",
+              "readerLayout": "adaptive",
+              "readerOverflow": "authored",
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1611,
+              "diagramWidth": 1581,
+              "pageComposition": {
+                "bodyPaddingPx": 64,
+                "headerPx": 60,
+                "diagramChromePx": 84,
+                "svgPx": 980,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 7.501779359430605,
+              "minimumProjectedNonEdgeTextPx": 8.43950177935943,
+              "minimumProjectedEdgeTextPx": 7.501779359430605,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 54,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            },
+            {
+              "width": 2048,
+              "height": 1320,
+              "theme": "light",
+              "innerWidth": 2048,
+              "innerHeight": 1320,
+              "scrollWidth": 2048,
+              "scrollHeight": 1320,
+              "overflowX": false,
+              "overflowY": false,
+              "verticalScrollAccepted": false,
+              "overflowDisposition": "contained",
+              "readerLayout": "adaptive",
+              "readerOverflow": null,
+              "readerFit": "intrinsic-height",
+              "ok": true,
+              "readerWidth": 1796,
+              "diagramWidth": 1746,
+              "pageComposition": {
+                "bodyPaddingPx": 64,
+                "headerPx": 68,
+                "diagramChromePx": 94,
+                "svgPx": 1082,
+                "cardsPx": 0,
+                "viewBoxHeight": 1045
+              },
+              "viewBoxWidth": 1686,
+              "minimumProjectedNodeTextPx": 8,
+              "minimumProjectedNonEdgeTextPx": 9,
+              "minimumProjectedEdgeTextPx": 8,
+              "minimumProjectedNodeText": ":443 bimebot.sarmadins.ir",
+              "minimumProjectedNodeTextDetail": "edge",
+              "minimumProjectedNodeTextOwner": {
+                "kind": "edge",
+                "id": null,
+                "from": "browser",
+                "to": "dmz_nginx"
+              },
+              "minimumRequiredNodeTextPx": 6,
+              "readabilityOk": true,
+              "hasLegend": true,
+              "hasNavigationDock": true,
+              "legendDockIntersectionArea": 0,
+              "dockStageIntersectionArea": 0,
+              "dockStageGap": 10,
+              "requiredDockStageGap": 10,
+              "viewerChromeStageOk": true,
+              "viewerChromeReserve": 44,
+              "viewerChromeActive": true,
+              "viewerChromeOk": true,
+              "resolvedTheme": "light"
+            }
+          ]
+        },
+        "captures": {
+          "status": "not-requested",
+          "screenshots": [],
+          "contactSheet": null
+        },
+        "sidecars": {
+          "receipt": "sarmad-vpc.browser-check.json",
+          "files": []
+        }
+      }
+    }
+  },
+  "diagnostics": [],
+  "evidence": {
+    "receipt": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.finalize.json",
+    "summaryReceipt": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.finalize-summary.json",
+    "browserCheckReceipt": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.browser-check.json"
+  },
+  "visualReview": "not-requested",
+  "finishedAt": "2026-10-04T14:10:24.398Z",
+  "durationMs": 5050,
+  "update": {
+    "status": "current",
+    "installedVersion": "3.0.1",
+    "availableVersion": "3.0.1",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-04T13:42:29.980Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  }
+}

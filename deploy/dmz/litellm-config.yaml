@@ -1,0 +1,32 @@
+# Two hops on purpose: this instance authenticates, budgets and LOGS; the
+# instance on 158.220.89.202 only exists to reach OpenRouter from a permitted
+# region. Keep the model ids identical to what model.base_model_id holds in the
+# OpenWebUI database, or chat returns 500.
+model_list:
+  - model_name: openai/gpt-5.4
+    litellm_params:
+      # openai/<id sent upstream>. The extra "openai/" is the OpenRouter id.
+      model: openai/openai/gpt-5.4
+      api_base: os.environ/RELAY_BASE
+      api_key: os.environ/RELAY_KEY
+      max_tokens: 8192        # OpenRouter reserves credit for the full output
+
+  # RAG. The index is built with 3072-dim vectors; changing this model means
+  # re-embedding all three knowledge collections.
+  - model_name: text-embedding-3-large
+    litellm_params:
+      model: openai/openai/text-embedding-3-large
+      api_base: os.environ/RELAY_BASE
+      api_key: os.environ/RELAY_KEY
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  database_url: os.environ/DATABASE_URL
+  store_prompts_in_spend_logs: true      # see §9 of MIGRATION-PLAN.md
+
+litellm_settings:
+  request_timeout: 600
+  drop_params: true
+  # Per-request record: key, model, tokens, cost, latency, status.
+  success_callback: []
+  failure_callback: []

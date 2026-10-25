@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/candidate.json",
+    "sha256": "3c4799e38f08af26ec237aecfe337f52290bbc51e8e69551b9b7e36cbc1f1c63",
+    "bytes": 10283
+  },
+  "artifact": {
+    "path": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.html",
+    "sha256": "539775a9a969bd41ca8ae5e760f6b08c7f086a356da59cb5eee8689014a1f68d",
+    "bytes": 793443
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.finalize.json",
+    "summaryReceipt": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.finalize-summary.json",
+    "browserCheckReceipt": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.0.1",
+    "availableVersion": "3.0.1",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-04T13:42:29.980Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 5050,
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "resolvedCrossovers": 3,
+      "routesOverSuggestedBends": 5,
+      "routesOverSuggestedStretch": 2
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [
+        {
+          "left": {
+            "from": "widget",
+            "to": "dmz_nginx",
+            "label": ":443 chat-api.sarmadins.ir",
+            "collectionIndex": 1,
+            "artifactIndex": 2
+          },
+          "right": {
+            "from": "dmz_nginx",
+            "to": "sso",
+            "label": ":443 validateToken",
+            "collectionIndex": 11,
+            "artifactIndex": 12
+          },
+          "point": [
+            444.90000000000015,
+            324
+          ],
+          "sharedNode": "dmz_nginx"
+        },
+        {
+          "left": {
+            "from": "bubble",
+            "to": "db_nginx",
+            "label": ":8000 /rest/v1/chat",
+            "collectionIndex": 4,
+            "artifactIndex": 5
+          },
+          "right": {
+            "from": "bubble",
+            "to": "dmz_nginx",
+            "label": "hairpin :443 for completions",
+            "collectionIndex": 18,
+            "artifactIndex": 19
+          },
+          "point": [
+            724,
+            131
+          ],
+          "sharedNode": "bubble"
+        },
+        {
+          "left": {
+            "from": "openwebui",
+            "to": "litellm",
+            "label": ":4000 every completion + embedding",
+            "collectionIndex": 9,
+            "artifactIndex": 10
+          },
+          "right": {
+            "from": "feedback",
+            "to": "postgres",
+            "label": ":5432 read",
+            "collectionIndex": 14,
+            "artifactIndex": 15
+          },
+          "point": [
+            868,
+            650
+          ]
+        }
+      ],
+      "detours": [
+        {
+          "relationship": {
+            "from": "widget",
+            "to": "dmz_nginx",
+            "label": ":443 chat-api.sarmadins.ir",
+            "collectionIndex": 1,
+            "artifactIndex": 2
+          },
+          "bends": 3,
+          "stretch": 1.122
+        },
+        {
+          "relationship": {
+            "from": "dmz_nginx",
+            "to": "openwebui",
+            "label": ":8080 UI · :8082 SSO proxy",
+            "collectionIndex": 3,
+            "artifactIndex": 4
+          },
+          "bends": 4,
+          "stretch": 1.153
+        },
+        {
+          "relationship": {
+            "from": "openwebui",
+            "to": "ragvol",
+            "label": "RAG retrieval",
+            "collectionIndex": 8,
+            "artifactIndex": 9
+          },
+          "bends": 4,
+          "stretch": 1.94,
+          "directCorridorBlockers": [
+            {
+              "id": "pipelines",
+              "label": "pipelines",
+              "box": [
+                900,
+                360,
+                200,
+                60
+              ]
+            }
+          ]
+        },
+        {
+          "relationship": {
+            "from": "openwebui",
+            "to": "litellm",
+            "label": ":4000 every completion + embedding",
+            "collectionIndex": 9,
+            "artifactIndex": 10
+          },
+          "bends": 4,
+          "stretch": 1
+        },
+        {
+          "relationship": {
+            "from": "openwebui",
+            "to": "tts",
+            "label": ":3001 speech",
+            "collectionIndex": 10,
+            "artifactIndex": 11
+          },
+          "bends": 3,
+          "stretch": 1
+        },
+        {
+          "relationship": {
+            "from": "bubble",
+            "to": "dmz_nginx",
+            "label": "hairpin :443 for completions",
+            "collectionIndex": 18,
+            "artifactIndex": 19
+          },
+          "bends": 2,
+          "stretch": 1.361
+        }
+      ],
+      "truncated": false
+    },
+    "hints": [
+      "widget → dmz_nginx and dmz_nginx → sso cross next to dmz_nginx: move node widget or sso so the two reach dmz_nginx from different sides (for example one level with it, one directly above or below it).",
+      "bubble → db_nginx and bubble → dmz_nginx cross next to bubble: move node db_nginx or dmz_nginx so the two reach bubble from different sides (for example one level with it, one directly above or below it).",
+      "openwebui → litellm crosses feedback → postgres: move the node of whichever is a branch, return, or second entrance to the other side of the main path, so that relationship runs through an empty corridor.",
+      "widget → dmz_nginx needs 3 bends: move node widget or dmz_nginx so they share a row or column with matching centers, or sit diagonally with a clear corner.",
+      "dmz_nginx → openwebui needs 4 bends: move node dmz_nginx or openwebui so they share a row or column with matching centers, or sit diagonally with a clear corner.",
+      "openwebui → litellm needs 4 bends: move node openwebui or litellm so they share a row or column with matching centers, or sit diagonally with a clear corner.",
+      "openwebui → tts needs 3 bends: move node openwebui or tts so they share a row or column with matching centers, or sit diagonally with a clear corner.",
+      "bubble → dmz_nginx needs 2 bends: move node bubble or dmz_nginx so they share a row or column with matching centers, or sit diagonally with a clear corner."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

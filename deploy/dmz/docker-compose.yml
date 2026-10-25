@@ -1,0 +1,93 @@
+# Chatbot-DMZ  172.17.1.26 — the only server with internet.
+# Public ingress, both chatbot APIs, and the single metered exit for every LLM
+# call. feedback-report lives here rather than on App because it needs SMTP.
+name: sarmad-dmz
+
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "${HOST_IP:?}:80:80"      # بیمبا UI
+      - "${HOST_IP:?}:8081:8081"  # chatbot API
+      - "${HOST_IP:?}:8082:8082"  # SSO passthrough for App
+
+  litellm:
+    # Every model call from every component goes through here, and every one of
+    # them is logged to the postgres below — inside the VPC.
+    image: ghcr.io/berriai/litellm:main-v1.83.14-stable
+    restart: unless-stopped
+    depends_on:
+      litellm-db:
+        condition: service_healthy
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:?}
+      DATABASE_URL: postgresql://litellm:${LITELLM_DB_PASSWORD:?}@litellm-db:5432/litellm
+      RELAY_BASE: ${RELAY_BASE:?}          # https://<relay vhost>/openrouter
+      RELAY_KEY: ${RELAY_KEY:?}            # virtual key minted on 158.220.89.202
+      STORE_MODEL_IN_DB: "False"
+    volumes:
+      - ./litellm-config.yaml:/app/config.yaml:ro
+    ports:
+      - "${HOST_IP:?}:4000:4000"
+
+  litellm-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: litellm
+      POSTGRES_PASSWORD: ${LITELLM_DB_PASSWORD:?}
+      POSTGRES_DB: litellm
+    volumes:
+      - litellm_pg:/var/lib/postgresql/data
+      - ./backups:/backups
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litellm"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  bubble-chat-api:
+    image: ghcr.io/chatcrm/bubble-chat-api:sarmad-a60507bfb10acb3cb11e349ee249ce9f64418bd2
+    restart: unless-stopped
+    env_file: ../env/bubble-chat-api.env
+    environment:
+      # Supabase is now a private address with no Kong in front of it.
+      SUPABASE_URL: http://${DB_IP:?}:8000
+      BUBBLE_API: https://bimebot.sarmadins.ir/api/v1/chats/new
+    extra_hosts:
+      # main.py hardcodes https://bimebot.sarmadins.ir/api/chat/completions and
+      # ignores BUBBLE_API for completions. Hairpin it to our own caddy so the
+      # hostname, and therefore the certificate, stays correct.
+      - "bimebot.sarmadins.ir:${HOST_IP:?}"
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  feedback-report:
+    image: ghcr.io/chatcrm/openwebui-feedback-report:sarmad-d1b7a16910ef0c3806cf0fd3957a00b55fdc794c
+    restart: unless-stopped
+    env_file: ../env/feedback-report.env
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:?}@${DB_IP:?}:5432/postgres
+
+  tts:
+    # sarmad-tts-wrapper-api. OpenWebUI finds it through a URL stored in the
+    # config table, not through any env var. Calls Google Gemini, so it has to
+    # live on the box with internet.
+    image: agwgkc8gowc848gk088c4840-gemini-tts:latest
+    restart: unless-stopped
+    env_file: ../env/tts.env
+    ports:
+      - "${HOST_IP:?}:3001:3000"
+
+volumes:
+  litellm_pg:
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 10.201.30.0/24

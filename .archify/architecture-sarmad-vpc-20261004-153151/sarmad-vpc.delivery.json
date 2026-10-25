@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "fd346c0f-ed0c-4807-83e2-226fa4048ed0",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/candidate.json",
+  "output": "/Users/alimohamadzade/Code/bizgpt/sarmad/.archify/architecture-sarmad-vpc-20261004-153151/sarmad-vpc.html",
+  "specification": {
+    "sha256": "3c4799e38f08af26ec237aecfe337f52290bbc51e8e69551b9b7e36cbc1f1c63",
+    "bytes": 10283
+  },
+  "artifact": {
+    "sha256": "539775a9a969bd41ca8ae5e760f6b08c7f086a356da59cb5eee8689014a1f68d",
+    "bytes": 793443
+  }
+}

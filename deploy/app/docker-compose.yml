@@ -1,0 +1,59 @@
+# Chatbot-App  172.20.4.26 — no internet.
+# Two fixed upstreams only, both on DMZ: LiteLLM for models, and a reverse
+# proxy for the customer's SSO. No forward proxy, no egress of its own.
+name: sarmad-app
+
+services:
+  open-webui:
+    image: ghcr.io/chatcrm/openwebui-integration:sarmad-d646806470c18addc8eb8b375fc536214a638f83
+    restart: unless-stopped
+    # Full captured env from the old container, so nothing silently goes
+    # missing. Everything that must change is overridden below, where it is
+    # visible in one place.
+    env_file: ../env/open-webui.env
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:?}@${DB_IP:?}:5432/postgres
+      # All model traffic leaves through DMZ. Nothing else.
+      OPENAI_API_BASE_URL: http://${DMZ_IP:?}:4000/v1
+      OPENAI_API_KEY: ${LITELLM_KEY_OPENWEBUI:?}
+      # Customer SSO, reverse-proxied by DMZ caddy (see dmz/Caddyfile).
+      SARMAD_SSO_URL: http://${DMZ_IP:?}:8081/api/api/Account/Authentication/validateToken
+      # Was /root/nltk_data in the container's writable layer — lost on every
+      # recreate, and unfetchable once internet is gone.
+      NLTK_DATA: /app/backend/data/nltk_data
+      # The admin Models/Connections pages of this build break when the Ollama
+      # API is disabled, so the flag stays on while the daemon is gone.
+      ENABLE_OLLAMA_API: "True"
+      OLLAMA_BASE_URL: http://127.0.0.1:11434
+    volumes:
+      - openwebui:/app/backend/data
+    ports:
+      - "${HOST_IP:?}:8080:8080"
+    extra_hosts:
+      - "supabase-db:${DB_IP:?}"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  pipelines:
+    image: ghcr.io/chatcrm/bizgpt-openwebui-pipeline:bizgpt-122d091db920efb41661852cf8f1794b60d2418e
+    restart: unless-stopped
+    env_file: ../env/pipelines.env
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:?}@${DB_IP:?}:5432/postgres
+      OPENAI_API_BASE_URL: http://${DMZ_IP:?}:4000/v1
+      OPENAI_API_KEY: ${LITELLM_KEY_PIPELINES:?}
+    volumes:
+      - pipelines:/app/pipelines
+
+volumes:
+  openwebui:
+  pipelines:
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 10.201.20.0/24
